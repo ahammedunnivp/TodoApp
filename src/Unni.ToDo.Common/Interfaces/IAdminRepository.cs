@@ -1,7 +1,6 @@
-﻿using Unni.ToDo.API.Data.Models;
-using Unni.ToDo.API.DTOs;
+﻿using Unni.ToDo.Common.Models;
 
-namespace Unni.ToDo.API.Data.Repositories
+namespace Unni.ToDo.Common.Interfaces
 {
     public interface IAdminRepository
     {

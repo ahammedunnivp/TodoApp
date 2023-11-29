@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Unni.ToDo.API.Enums;
 
-namespace Unni.ToDo.API.DTOs
+namespace Unni.ToDo.Common.DTOs
 {
     public class CreateTodoRequest
     {

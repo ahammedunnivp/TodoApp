@@ -1,4 +1,4 @@
-﻿namespace Unni.ToDo.API.DTOs
+﻿namespace Unni.ToDo.Common.DTOs
 {
     public abstract class BaseDataRequest
     {

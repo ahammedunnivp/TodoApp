@@ -1,17 +1,14 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Unni.ToDo.API;
-using Unni.ToDo.API.Data.Models;
 using System.Text.Json;
-using Unni.ToDo.API.DTOs;
+using Unni.ToDo.API;
 using Unni.ToDo.API.Data.Repositories;
+using Unni.ToDo.Common.DTOs;
+using Unni.ToDo.Common.Models;
 
 namespace Unni.ToDo.Tests.EndpointTests
 {
@@ -22,7 +19,7 @@ namespace Unni.ToDo.Tests.EndpointTests
 
         public EndpointTests()
         {
-            var server = new TestServer(new WebHostBuilder().ConfigureTestServices(services => 
+            var server = new TestServer(new WebHostBuilder().ConfigureTestServices(services =>
             {
                 var descriptor = services.SingleOrDefault(
                     d => d.ServiceType == typeof(DbContextOptions<ToDoDBContext>));
@@ -44,7 +41,7 @@ namespace Unni.ToDo.Tests.EndpointTests
                 }
             })
             .UseStartup<Startup>());
-            
+
             _client = server.CreateClient();
         }
 
@@ -55,7 +52,7 @@ namespace Unni.ToDo.Tests.EndpointTests
             var resp = await _client.GetAsync($"api/todo/{id}");
             var content = await resp.Content.ReadAsStringAsync();
             var todo = JsonSerializer.Deserialize<TodoItemDto>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            Assert.Equal(id, todo.Id.Value);
+            Assert.Equal(id, todo?.Id.Value);
             resp.EnsureSuccessStatusCode();
         }
 
@@ -89,7 +86,7 @@ namespace Unni.ToDo.Tests.EndpointTests
             var jsonContent = new StringContent(JsonSerializer.Serialize(dto), Encoding.UTF8, "application/json");
 
             var resp = await _client.PostAsync("api/todo", jsonContent);
-            
+
             resp.EnsureSuccessStatusCode();
             Assert.Equal(System.Net.HttpStatusCode.Created, resp.StatusCode);
             var content = await resp.Content.ReadAsStringAsync();
@@ -253,7 +250,7 @@ namespace Unni.ToDo.Tests.EndpointTests
 
         [Theory]
         [InlineData(1, 10, "Title", true, true, "Work", false)]
-        public async void Search_WithFilter_ShouldReturn_Success(int page, int pageSize, 
+        public async void Search_WithFilter_ShouldReturn_Success(int page, int pageSize,
             string sortField, bool isAscending, bool isFilter, string category, bool isDone)
         {
             var searchRequest = new GetTodoRequest
@@ -269,7 +266,7 @@ namespace Unni.ToDo.Tests.EndpointTests
                 Filter = new ToDoFilter
                 {
                     Category = category,
-                    IsDoneFilter = false
+                    IsDoneFilter = isDone
                 }
             };
             var jsonContent = new StringContent(JsonSerializer.Serialize(searchRequest), Encoding.UTF8, "application/json");
@@ -297,7 +294,7 @@ namespace Unni.ToDo.Tests.EndpointTests
                 Filter = new ToDoFilter
                 {
                     Category = category,
-                    IsDoneFilter = false
+                    IsDoneFilter = isDone
                 }
             };
             var jsonContent = new StringContent(JsonSerializer.Serialize(searchRequest), Encoding.UTF8, "application/json");
@@ -347,7 +344,7 @@ string sortField, bool isAscending, bool isFilter, string category, bool isDone)
             Assert.NotNull(paginatedResponse);
 
             var todoList = paginatedResponse.Items.ToList();
-            
+
             todoList.ForEach(item => Assert.Equal(category, item.Category));
             todoList.ForEach(item => Assert.Equal(isDone, item.IsDone));
         }
@@ -401,12 +398,40 @@ string sortField, bool isAscending, bool isFilter, string category, bool isDone)
             Assert.NotEmpty(todoList);
         }
 
+        [Theory]
+        [InlineData(1000)]
+        public async void Search_WithLargePageSize_ShouldReturn_LessThanMaxSize(int pageSize)
+        {
+            var searchRequest = new GetTodoRequest
+            {
+                Pagination = new Pagination
+                {
+                    Page = 1,
+                    PageSize = pageSize
+                }
+            };
+            var jsonContent = new StringContent(JsonSerializer.Serialize(searchRequest), Encoding.UTF8, "application/json");
+
+            var resp = await _client.PostAsync($"api/todo/search", jsonContent);
+
+            resp.EnsureSuccessStatusCode();
+
+            var content = await resp.Content.ReadAsStringAsync();
+            var paginatedResponse = JsonSerializer.Deserialize<PaginatedResponseDto<TodoItemDto>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            Assert.NotNull(paginatedResponse);
+
+            var todoList = paginatedResponse.Items.ToList();
+
+            Assert.NotEmpty(todoList);
+            Assert.Equal(60, paginatedResponse?.Pagination?.PageSize);
+        }
+
         private void SeedData(ToDoDBContext dBContext)
         {
-            if(!dBContext.ToDoItems.Any())
+            if (!dBContext.ToDoItems.Any())
             {
                 dBContext.ToDoItems.AddRange(
-                    new TodoItemEntity { Title = "Task 1", Category = "Work", Difficulty = 1, IsDone = true},
+                    new TodoItemEntity { Title = "Task 1", Category = "Work", Difficulty = 1, IsDone = true },
                     new TodoItemEntity { Title = "Task 2", Category = "Personal", Difficulty = 2, IsDone = true },
                     new TodoItemEntity { Title = "Task 3", Category = "Work", Difficulty = 3, IsDone = true },
                     new TodoItemEntity { Title = "Task 4", Category = "Personal", Difficulty = 4, IsDone = false },

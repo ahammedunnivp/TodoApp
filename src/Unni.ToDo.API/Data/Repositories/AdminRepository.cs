@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Unni.ToDo.API.Data.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Unni.ToDo.Common.Interfaces;
+using Unni.ToDo.Common.Models;
 
 namespace Unni.ToDo.API.Data.Repositories
 {

@@ -8,3 +8,5 @@
 /src/Unni.ToDo.API/obj
 /src/Unni.ToDo.Tests/bin/Debug/net7.0
 /src/Unni.ToDo.Tests/obj
+/src/Unni.ToDo.Common/bin/Debug/net7.0
+/src/Unni.ToDo.Common/obj

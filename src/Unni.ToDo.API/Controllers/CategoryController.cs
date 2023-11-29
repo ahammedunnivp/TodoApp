@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Unni.ToDo.API.DTOs;
-using Unni.ToDo.API.Services;
+using Unni.ToDo.Common.DTOs;
+using Unni.ToDo.Common.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,7 +21,7 @@ namespace Unni.ToDo.API.Controllers
         }
         // GET: api/<CategoryController>
         [HttpGet]
-        [ResponseCache(Duration =60)]
+        [ResponseCache(Duration = 60)]
         public IActionResult Get()
         {
             _logger.LogInformation("Entering {Controller}/{Action}", nameof(CategoryController), nameof(Get));

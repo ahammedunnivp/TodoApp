@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using Unni.ToDo.API.Data.Models;
-using Unni.ToDo.API.Data.Repositories;
-using Unni.ToDo.API.Data.UnitOfWork;
-using Unni.ToDo.API.DTOs;
+using Unni.ToDo.Common.DTOs;
+using Unni.ToDo.Common.Interfaces;
+using Unni.ToDo.Common.Models;
 
 namespace Unni.ToDo.API.Services
 {
@@ -35,12 +34,16 @@ namespace Unni.ToDo.API.Services
 
         public PaginatedResponseDto<TodoItemDto> Search(GetTodoRequest request)
         {
-            var filter = request.IsFilter? request.Filter:null;
+            var filter = request.IsFilter ? request.Filter : null;
+            var pagination = new Pagination();
+
             if (request?.Pagination != null)
             {
-                request.Pagination.Page = request.Pagination.Page < 1 ? 1 : request.Pagination.Page;
-                request.Pagination.PageSize = request.Pagination.PageSize > 60 ? 60 : request.Pagination.PageSize;
-                request.Pagination.PageSize = request.Pagination.PageSize < 1 ? 3 : request.Pagination.PageSize;
+                pagination.Page = request.Pagination.Page < 1 ? 1 : request.Pagination.Page;
+                if (request.Pagination.PageSize > 60)
+                    request.Pagination.PageSize = 60;
+                if (request.Pagination.PageSize < 1)
+                    request.Pagination.PageSize = 3;
             }
             else
             {
@@ -52,7 +55,7 @@ namespace Unni.ToDo.API.Services
             }
             (var todoItems, int total_count) = _repository.Search(request.Pagination, filter);
             var items = _mapper.Map<IEnumerable<TodoItemDto>>(todoItems);
-            
+
             return new PaginatedResponseDto<TodoItemDto>(request.Pagination, items, total_count);
         }
 
@@ -63,13 +66,13 @@ namespace Unni.ToDo.API.Services
         }
 
         public TodoItemDto UpdateToDoItem(int id, TodoItemDto item)
-        {       
+        {
             var todoItem = _repository.GetById(id);
             if (todoItem != null)
             {
-                todoItem.Title = item.Title != todoItem.Title? item.Title : todoItem.Title;
+                todoItem.Title = item.Title != todoItem.Title ? item.Title : todoItem.Title;
                 todoItem.Difficulty = item.Difficulty != todoItem.Difficulty ? item.Difficulty : todoItem.Difficulty;
-                todoItem.IsDone = item.IsDone != todoItem.IsDone? item.IsDone : todoItem.IsDone;
+                todoItem.IsDone = item.IsDone != todoItem.IsDone ? item.IsDone : todoItem.IsDone;
                 todoItem.Category = item.Category != todoItem.Category ? item.Category : todoItem.Category;
                 todoItem = _repository.Update(todoItem);
                 _unitOfWork.SaveChanges();

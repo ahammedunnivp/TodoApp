@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using System.Linq;
-using Unni.ToDo.API.Data.Models;
-using Unni.ToDo.API.DTOs;
+using Unni.ToDo.Common.DTOs;
+using Unni.ToDo.Common.Interfaces;
+using Unni.ToDo.Common.Models;
 
 namespace Unni.ToDo.API.Data.Repositories
 {
@@ -32,7 +32,7 @@ namespace Unni.ToDo.API.Data.Repositories
             }
         }
 
-        public (IEnumerable<TodoItemEntity>, int) Search(Pagination pagination, ToDoFilter filter)
+        public (IEnumerable<TodoItemEntity>, int) Search(Pagination pagination, ToDoFilter? filter)
         {
             var query = _dbContext.ToDoItems.AsQueryable();
 

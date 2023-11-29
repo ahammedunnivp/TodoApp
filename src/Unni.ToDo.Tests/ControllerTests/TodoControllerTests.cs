@@ -1,17 +1,9 @@
-﻿using AutoMapper;
-using Castle.Core.Logging;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Unni.ToDo.API.Controllers;
-using Unni.ToDo.API.DTOs;
-using Unni.ToDo.API.Services;
+using Unni.ToDo.Common.DTOs;
+using Unni.ToDo.Common.Interfaces;
 
 namespace Unni.ToDo.Tests.ControllerTests
 {
@@ -81,7 +73,7 @@ namespace Unni.ToDo.Tests.ControllerTests
             var dto = Assert.IsAssignableFrom<PaginatedResponseDto<TodoItemDto>>(objResult.Value);
 
             Assert.Equal(todoItems.Count, dto.Items.Count());
-            
+
         }
 
         [Fact]

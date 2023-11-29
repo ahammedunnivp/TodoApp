@@ -1,14 +1,7 @@
-﻿using Castle.Core.Logging;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Unni.ToDo.API.Data.Models;
 using Unni.ToDo.API.Data.Repositories;
-using Unni.ToDo.API.DTOs;
+using Unni.ToDo.Common.Models;
 
 namespace Unni.ToDo.Tests.RepositoryTests
 {
@@ -16,7 +9,7 @@ namespace Unni.ToDo.Tests.RepositoryTests
     {
         private readonly TodoItemRepository _repo;
         private readonly ToDoDBContext _dbContext;
-        private readonly Mock<ILogger<TodoItemRepository>> _logger = 
+        private readonly Mock<ILogger<TodoItemRepository>> _logger =
             new Mock<ILogger<TodoItemRepository>>();
 
         public ToDoRepositoryTests()
@@ -81,7 +74,7 @@ namespace Unni.ToDo.Tests.RepositoryTests
             Assert.Null(resp);
         }
 
-        private TodoItemEntity GetValidEntity(int? id = null, string? title = "Sample", 
+        private TodoItemEntity GetValidEntity(int? id = null, string? title = "Sample",
             string? category = "Work")
         {
             return new TodoItemEntity

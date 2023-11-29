@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using Unni.ToDo.API.Data.Models;
-using Unni.ToDo.API.Data.Repositories;
-using Unni.ToDo.API.Data.UnitOfWork;
-using Unni.ToDo.API.DTOs;
+using Unni.ToDo.Common.DTOs;
+using Unni.ToDo.Common.Interfaces;
+using Unni.ToDo.Common.Models;
 
 namespace Unni.ToDo.API.Services
 {
@@ -51,7 +50,7 @@ namespace Unni.ToDo.API.Services
         public CategoryDto UpdateCategory(CategoryDto category)
         {
             var item = _repository.GetCategoryById(category.Id);
-            if(item != null)
+            if (item != null)
             {
                 item.Name = item.Name != category.Name ? category.Name : item.Name;
                 item.Description = item.Description != category.Description ? category.Description : item.Description;
