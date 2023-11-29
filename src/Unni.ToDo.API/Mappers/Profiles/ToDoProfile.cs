@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Unni.ToDo.API.DTOs;
-using Unni.ToDo.API.Data.Models;
+using Unni.ToDo.Common.DTOs;
+using Unni.ToDo.Common.Models;
 
-namespace Unni.ToDo.API.DTOs.Mappers.Profiles
+namespace Unni.ToDo.API.Mappers.Profiles
 {
     public class ToDoProfile : Profile
     {

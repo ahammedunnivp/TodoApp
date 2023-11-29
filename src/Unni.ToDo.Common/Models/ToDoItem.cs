@@ -1,6 +1,4 @@
-﻿using Unni.ToDo.API.Enums;
-
-namespace Unni.ToDo.API.Data.Models
+﻿namespace Unni.ToDo.Common.Models
 {
     public class TodoItemEntity
     {

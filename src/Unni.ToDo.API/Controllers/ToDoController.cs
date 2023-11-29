@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Unni.ToDo.API.DTOs;
-using Unni.ToDo.API.Services;
+using Unni.ToDo.Common.DTOs;
+using Unni.ToDo.Common.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,7 +27,7 @@ namespace Unni.ToDo.API.Controllers
         {
             _logger.LogInformation("Entering {Controller}/{Action}", nameof(ToDoController), nameof(GetById));
             var item = _service.GetById(id);
-            if(item == null)
+            if (item == null)
             {
                 return NotFound();
             }
@@ -43,10 +43,10 @@ namespace Unni.ToDo.API.Controllers
         {
             _logger.LogInformation("Entering {Controller}/{Action}", nameof(ToDoController), nameof(Search));
             var items = _service.Search(request);
-            if(items?.Items?.Count() != 0)
+            if (items?.Items?.Count() != 0)
                 return Ok(items);
             else
-                return NotFound( new { Message = "Search is empty"});
+                return NotFound(new { Message = "Search is empty" });
         }
 
         // POST api/<ToDoController>
@@ -73,7 +73,7 @@ namespace Unni.ToDo.API.Controllers
             }
 
             var existingTodoItem = _service.GetById(id);
-            if(existingTodoItem == null)
+            if (existingTodoItem == null)
             {
                 return NotFound();
             }

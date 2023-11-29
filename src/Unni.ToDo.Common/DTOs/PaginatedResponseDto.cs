@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-
-namespace Unni.ToDo.API.DTOs
+﻿namespace Unni.ToDo.Common.DTOs
 {
     public class PaginatedResponseDto<T>
     {

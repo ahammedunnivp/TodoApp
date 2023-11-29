@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Unni.ToDo.API.Data.Models;
+using Unni.ToDo.Common.Models;
 
 namespace Unni.ToDo.API.Data.Repositories
 {

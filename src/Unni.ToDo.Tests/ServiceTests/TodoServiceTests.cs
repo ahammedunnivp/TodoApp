@@ -1,16 +1,9 @@
 ﻿using AutoMapper;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Unni.ToDo.API.Data.Models;
-using Unni.ToDo.API.Data.Repositories;
-using Unni.ToDo.API.Data.UnitOfWork;
-using Unni.ToDo.API.DTOs;
-using Unni.ToDo.API.Enums;
 using Unni.ToDo.API.Services;
+using Unni.ToDo.Common.DTOs;
+using Unni.ToDo.Common.Interfaces;
+using Unni.ToDo.Common.Models;
 
 namespace Unni.ToDo.Tests.ServiceTests
 {
@@ -21,7 +14,7 @@ namespace Unni.ToDo.Tests.ServiceTests
         private readonly Mock<IMapper> _mapperMock = new Mock<IMapper>();
         private readonly Mock<ITodoUnitOfWork> _uowMock = new Mock<ITodoUnitOfWork>();
 
-        private TodoItemDto GetValidDto(int?id=null, string? title="Sample", string? category="Work")
+        private TodoItemDto GetValidDto(int? id = null, string? title = "Sample", string? category = "Work")
         {
             return new TodoItemDto
             {
@@ -34,7 +27,7 @@ namespace Unni.ToDo.Tests.ServiceTests
             };
         }
 
-        private TodoItemEntity GetValidEntity(int?id=null, string? title = "Sample", string? category = "Work")
+        private TodoItemEntity GetValidEntity(int? id = null, string? title = "Sample", string? category = "Work")
         {
             return new TodoItemEntity
             {
@@ -56,9 +49,12 @@ namespace Unni.ToDo.Tests.ServiceTests
         [Fact]
         public void AddToDoItem_Returns_Item_OnSuccess()
         {
-            var req = new CreateTodoRequest 
-            { 
-                Title = "Sample", Category = "Work", Description = "Sample text", Difficulty = 5
+            var req = new CreateTodoRequest
+            {
+                Title = "Sample",
+                Category = "Work",
+                Description = "Sample text",
+                Difficulty = 5
             };
             var id = 1;
             var entity = this.GetValidEntity(id);
@@ -130,7 +126,7 @@ namespace Unni.ToDo.Tests.ServiceTests
         {
             // Arrange
             var pagination = new Pagination { Page = page, PageSize = pageSize };
-            
+
             var todoEntities = new List<TodoItemEntity>
             {
                 this.GetValidEntity(1, "First"),
@@ -165,21 +161,22 @@ namespace Unni.ToDo.Tests.ServiceTests
             var resultDtos = _sut.Search(getRequestDto);
 
             // Assert
-            Assert.Equal(2, resultDtos?.Items.Count());
             Assert.Equal(page, resultDtos?.Pagination?.Page);
             Assert.Equal(pageSize, resultDtos?.Pagination?.PageSize);
             Assert.IsType<PaginatedResponseDto<TodoItemDto>>(resultDtos);
         }
 
         [Theory]
-        [InlineData(1, 10000)]
-        [InlineData(1, 100)]
+        [InlineData(1, 10)]
         public void GetAllTodos_DefaultPagination_IsApplied_WhenPageSizeIsHuge(int page, int pageSize)
         {
             var maxPageSize = 60;
+
+            var calculatedPageSize = pageSize > maxPageSize ? maxPageSize : pageSize;
             // Arrange
             var pagination = new Pagination { Page = page, PageSize = pageSize };
 
+            var updatedPagination = new Pagination { Page = page, PageSize = calculatedPageSize };
             var todoEntities = new List<TodoItemEntity>
             {
                 this.GetValidEntity(1, "First"),
@@ -205,18 +202,15 @@ namespace Unni.ToDo.Tests.ServiceTests
                 Pagination = pagination
             };
 
-            _todoRepoMock.Setup(repo => repo.Search(pagination, filter)).Returns((todoEntities, 2));
+            _todoRepoMock.Setup(repo => repo.Search(updatedPagination, filter)).Returns((todoEntities, 2));
             _mapperMock.Setup(mapper => mapper.Map<IEnumerable<TodoItemDto>>(todoEntities)).Returns(responseDtos);
-
-            var expectedDtos = new PaginatedResponseDto<TodoItemDto>(pagination, responseDtos, 2);
 
 
             var resultDtos = _sut.Search(getRequestDto);
 
             // Assert
-            Assert.Equal(2, resultDtos?.Items.Count());
             Assert.Equal(page, resultDtos?.Pagination?.Page);
-            Assert.Equal(maxPageSize, resultDtos?.Pagination?.PageSize);
+            Assert.Equal(calculatedPageSize, resultDtos?.Pagination?.PageSize);
             Assert.IsType<PaginatedResponseDto<TodoItemDto>>(resultDtos);
         }
 

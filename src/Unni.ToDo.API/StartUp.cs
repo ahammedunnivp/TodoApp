@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Unni.ToDo.API.Services;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using Serilog;
+﻿using Microsoft.EntityFrameworkCore;
 using Unni.ToDo.API.Data.Repositories;
 using Unni.ToDo.API.Data.UnitOfWork;
+using Unni.ToDo.API.Services;
+using Unni.ToDo.Common.Interfaces;
 
 namespace Unni.ToDo.API
 {
@@ -31,7 +29,7 @@ namespace Unni.ToDo.API
 
             if (env.IsDevelopment())
             {
-  
+
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -58,13 +56,13 @@ namespace Unni.ToDo.API
 
             services.AddMemoryCache();
             services.AddResponseCaching();
-            services.AddLogging(builder => 
+            services.AddLogging(builder =>
             {
                 builder.AddConsole();
                 //builder.ClearProviders();
                 //builder.AddSerilog();
             });
-            services.AddDbContext<ToDoDBContext>(options => 
+            services.AddDbContext<ToDoDBContext>(options =>
                     options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDbContext<AdminDbContext>(options =>
                     options.UseSqlite(Configuration.GetConnectionString("AdminConnection")));
@@ -83,7 +81,7 @@ namespace Unni.ToDo.API
 
             services.AddSwaggerGen();
             services.AddEndpointsApiExplorer();
-            
+
         }
     }
 }

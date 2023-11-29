@@ -1,14 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Unni.ToDo.API.Data.Models
+namespace Unni.ToDo.Common.DTOs
 {
-    public class CategoryEntity
+    public class AddCategoryRequest
     {
-        public int Id { get; set; }
-
         [Required]
         public string Name { get; set; }
         public string? Description { get; set; }
-
     }
 }

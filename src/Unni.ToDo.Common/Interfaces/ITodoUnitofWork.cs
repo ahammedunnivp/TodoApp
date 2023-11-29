@@ -1,4 +1,4 @@
-﻿namespace Unni.ToDo.API.Data.UnitOfWork
+﻿namespace Unni.ToDo.Common.Interfaces
 {
     public interface ITodoUnitOfWork : IDisposable
     {

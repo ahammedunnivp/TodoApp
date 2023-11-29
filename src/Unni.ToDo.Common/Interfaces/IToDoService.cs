@@ -1,6 +1,6 @@
-﻿using Unni.ToDo.API.DTOs;
+﻿using Unni.ToDo.Common.DTOs;
 
-namespace Unni.ToDo.API.Services
+namespace Unni.ToDo.Common.Interfaces
 {
     public interface ITodoService
     {
