@@ -71,6 +71,7 @@ namespace Unni.ToDo.API.Services
             if (todoItem != null)
             {
                 todoItem.Title = item.Title != todoItem.Title ? item.Title : todoItem.Title;
+                todoItem.Description = item.Description != todoItem.Description ? item.Description : todoItem.Description;
                 todoItem.Difficulty = item.Difficulty != todoItem.Difficulty ? item.Difficulty : todoItem.Difficulty;
                 todoItem.IsDone = item.IsDone != todoItem.IsDone ? item.IsDone : todoItem.IsDone;
                 todoItem.Category = item.Category != todoItem.Category ? item.Category : todoItem.Category;

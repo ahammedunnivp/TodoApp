@@ -153,7 +153,7 @@ namespace Unni.ToDo.Tests.EndpointTests
 
         [Theory]
         [InlineData(1, "Update Task", "updated added", "Work", 5, true)]
-        public async void UpdateToDo_SholdReturn_UpdatedItem(int id, string title, string description, string category, int difficulty, bool isDone)
+        public async void UpdateToDo_ShouldReturn_UpdatedItem(int id, string title, string description, string category, int difficulty, bool isDone)
         {
             var dto = new TodoItemDto
             {

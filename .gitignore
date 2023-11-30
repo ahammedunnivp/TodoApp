@@ -10,3 +10,7 @@
 /src/Unni.ToDo.Tests/obj
 /src/Unni.ToDo.Common/bin/Debug/net7.0
 /src/Unni.ToDo.Common/obj
+/src/.vs/ProjectEvaluation
+/src/BlazorApp1/bin/Debug/net8.0
+/src/Unni.ToDo.UI/bin/Debug/net8.0
+/src/Unni.ToDo.UI/obj
