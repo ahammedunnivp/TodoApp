@@ -2,24 +2,24 @@
 @rendermode InteractiveServer
 @inject HttpClient HttpClient;
 @using Unni.ToDo.Common.DTOs;
-<h3>ToDo List</h3>
+<h2>ToDo List</h2>
 
 @if (todos == null && !IsDataEmpty)
 {
-    <p>Loading...</p>
+    <p>Todos are loading...</p>
 }
 else
 {
     <div style="display: flex; justify-content: space-between;">
-        <button @onclick="AddTask">Add Task</button>
-        <button @onclick="ToggleShowPendingTasks">
+        <button @onclick="AddTodo">Add Todo +</button>
+        <button @onclick="ToggleShowPendingTodos">
             @if (showOnlyPendingItems)
             {
-                <span>Show all tasks</span>
+                <span>Show all todos</span>
             }
             else
             {
-                <span>Show only pending tasks</span>
+                <span>Show only pending todos</span>
             }
         </button>
     </div>
@@ -104,25 +104,25 @@ else
                             @if (editingItem == null || editingItem.Id != todo.Id)
                             {
                                 <button @onclick="() => EditItem(todo)">Edit</button>
-                                <button @onclick="() => DeleteItem(todo)">Delete</button>
+                                <button @onclick="() => DeleteItemAsync(todo)">Delete</button>
                             }
                             else
                             {
-                                <button @onclick="() => UpdateItem()">Update</button>
+                                <button @onclick="() => UpdateItemAsync()">Update</button>
                                 <button @onclick="CancelEdit">Cancel</button>
                             }
                         </td>
                     </tr>
                 }
             }
-            @if (showTaskInput)
+            @if (showTodoInputControls)
             {
                 <tr>
                     <td></td>
-                    <td><input @bind="newTask.Title" placeholder="Title" /></td>
-                    <td><input @bind="newTask.Description" placeholder="Description" /></td>
+                    <td><input @bind="addTodoRequest.Title" placeholder="Title" /></td>
+                    <td><input @bind="addTodoRequest.Description" placeholder="Description" /></td>
                     <td>
-                        <select @bind="newTask.Category">
+                        <select @bind="addTodoRequest.Category">
                             <option value="">Select a category</option>
                             @foreach (var option in categories)
                             {
@@ -130,11 +130,11 @@ else
                             }
                         </select>
                     </td>
-                    <td><input @bind="newTask.Difficulty" placeholder="Difficulty" /></td>
+                    <td><input @bind="addTodoRequest.Difficulty" placeholder="Difficulty" /></td>
                     <td><input type="checkbox" disabled /></td>
                     <td>
-                        <button @onclick="SaveNewTask">Save</button>
-                        <button @onclick="CancelAddTask">Cancel</button>
+                        <button @onclick="SaveNewTodo">Save</button>
+                        <button @onclick="CancelAddTodo">Cancel</button>
                     </td>
                 </tr>
             }
@@ -163,7 +163,7 @@ else
                 <select @onchange="PageSizeChanged">
                     <option value="5">5</option>
                     <option value="10">10</option>
-                    <option value="20">20</option>
+                    <option value="25">25</option>
                 </select>
                 results
                 <button type="button" @onclick="GoToNextPage" disabled="@IsLastPage">Next</button>
@@ -174,10 +174,16 @@ else
 }
 @code{
 
-    private PaginatedResponseDto<TodoItemDto> paginatedResponse;
     private List<TodoItemDto> todos;
+    private List<CategoryDto> categories;
 
-    private GetTodoRequest request;
+    private int currentPage = 1;
+    private int totalPages;
+    private int pageSize = 5;
+
+    private GetTodoRequest searchRequest;
+    private CreateTodoRequest addTodoRequest = new CreateTodoRequest();
+
     private ToDoFilter filter = new ToDoFilter();
     private Pagination pagination = new Pagination
         {
@@ -186,15 +192,11 @@ else
             IsSortAscending = true
         };
 
+    private PaginatedResponseDto<TodoItemDto> paginatedResponse;
+
     private TodoItemDto editingItem;
-    private int currentPage = 1;
-    private int totalPages;
-    private int pageSize = 5;
-    private List<CategoryDto> categories;
 
-    private bool showTaskInput = false;
-    private CreateTodoRequest newTask = new CreateTodoRequest();
-
+    private bool showTodoInputControls = false;
     private bool showOnlyPendingItems = false;
 
     private bool IsFirstPage => currentPage == 1;
@@ -207,11 +209,130 @@ else
         await LoadCategoriesAsync();
     }
 
+    private async Task LoadCategoriesAsync()
+    {
+        categories = await HttpClient.GetFromJsonAsync<List<CategoryDto>>("https://localhost:7116/api/category");
+    }
+
+    private async Task LoadPageAsync()
+    {
+        bool isFilter = false;
+        pagination.Page = currentPage;
+        if (showOnlyPendingItems)
+        {
+            filter.IsDoneFilter = false;
+            isFilter = true;
+        }
+
+        searchRequest = new GetTodoRequest { Pagination = pagination, Filter = filter, IsFilter = isFilter };
+
+        var response = await HttpClient.PostAsJsonAsync<GetTodoRequest>("https://localhost:7116/api/todo/search", searchRequest);
+        if (response.IsSuccessStatusCode)
+        {
+            paginatedResponse = await response.Content.ReadFromJsonAsync<PaginatedResponseDto<TodoItemDto>>();
+            todos = paginatedResponse.Items.ToList();
+            totalPages = paginatedResponse.Pagination.TotalCount.Value % pageSize == 0 ? paginatedResponse.Pagination.TotalCount.Value / pageSize : (paginatedResponse.Pagination.TotalCount.Value / pageSize) + 1;
+            StateHasChanged();
+        }
+        else
+        {
+            IsDataEmpty = true;
+            StateHasChanged();
+        }
+    }
+
+    private async Task<bool> SaveNewTodoAsync(CreateTodoRequest todo)
+    {
+        var response = await HttpClient.PostAsJsonAsync<CreateTodoRequest>("https://localhost:7116/api/todo/", todo);
+        if (response.IsSuccessStatusCode)
+        {
+            var newItem = await response.Content.ReadFromJsonAsync<TodoItemDto>();
+            if (newItem != null)
+            {
+                todos.Add(newItem);
+            }
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    protected async Task UpdateItemAsync()
+    {
+        var response = await HttpClient.PutAsJsonAsync<TodoItemDto>($"https://localhost:7116/api/todo/{editingItem.Id}", editingItem);
+        if (response.IsSuccessStatusCode)
+        {
+            editingItem = null;
+            LoadPageAsync();
+        }
+    }
+
+    protected async Task DeleteItemAsync(TodoItemDto item)
+    {
+        var response = await HttpClient.DeleteAsync($"https://localhost:7116/api/todo/{item.Id}");
+        if (response.IsSuccessStatusCode)
+        {
+            LoadPageAsync();
+        }
+    }
+
+    private void AddTodo()
+    {
+        showTodoInputControls = true;
+    }
+
+    private async Task SaveNewTodo()
+    {
+        var flag = await SaveNewTodoAsync(addTodoRequest);
+        if (flag)
+        {
+            showTodoInputControls = false;
+            addTodoRequest = new CreateTodoRequest();
+            StateHasChanged();
+        }
+
+    }
+
+    private void CancelAddTodo()
+    {
+        showTodoInputControls = false;
+        addTodoRequest = new CreateTodoRequest();
+    }
+
+    protected void EditItem(TodoItemDto item)
+    {
+        editingItem = new TodoItemDto
+        {
+            Id = item.Id,
+            Title = item.Title,
+            Description = item.Description,
+            Category = item.Category,
+            Difficulty = item.Difficulty,
+            IsDone = item.IsDone
+        };
+    }
+
+    protected void CancelEdit()
+    {
+        editingItem = null;
+    }
+
     private void GoToPreviousPage()
     {
         if (!IsFirstPage)
         {
             currentPage--;
+            LoadPageAsync();
+        }
+    }
+
+    private void GoToNextPage()
+    {
+        if (!IsLastPage)
+        {
+            currentPage++;
             LoadPageAsync();
         }
     }
@@ -233,133 +354,14 @@ else
     private void SortOrderUpdated(ChangeEventArgs e)
     {
         var sortOrder = e?.Value?.ToString();
-        pagination.IsSortAscending = sortOrder == "Ascending"? true:false;
+        pagination.IsSortAscending = sortOrder == "Ascending" ? true : false;
         LoadPageAsync();
     }
 
-    private void ToggleShowPendingTasks()
+    private void ToggleShowPendingTodos()
     {
         showOnlyPendingItems = showOnlyPendingItems ? false : true;
         LoadPageAsync();
-    }
-
-    private void GoToNextPage()
-    {
-        if (!IsLastPage)
-        {
-            currentPage++;
-            LoadPageAsync();
-        }
-    }
-
-    private void AddTask()
-    {
-        showTaskInput = true;
-    }
-
-    private async Task SaveNewTask()
-    {
-        var flag = await SaveNewTaskAsync(newTask);
-        if (flag)
-        {
-            showTaskInput = false;
-            newTask = new CreateTodoRequest();
-            StateHasChanged();
-        }
-
-    }
-
-    private async Task<bool> SaveNewTaskAsync(CreateTodoRequest todo)
-    {
-        var response = await HttpClient.PostAsJsonAsync<CreateTodoRequest>("https://localhost:7116/api/todo/", todo);
-        if (response.IsSuccessStatusCode)
-        {
-            var newItem = await response.Content.ReadFromJsonAsync<TodoItemDto>();
-            if (newItem != null)
-            {
-                todos.Add(newItem);
-            }
-            return true;
-        }
-        else
-        {
-            return false;
-        } 
-    }
-
-    private void CancelAddTask()
-    {
-        showTaskInput = false;
-        newTask = new CreateTodoRequest();
-    }
-
-    private async Task LoadPageAsync()
-    {
-        bool isFilter = false;
-        pagination.Page = currentPage;
-        if (showOnlyPendingItems)
-        {
-            filter.IsDoneFilter = false;
-            isFilter = true;
-        }
-        
-        request = new GetTodoRequest { Pagination = pagination, Filter = filter, IsFilter = isFilter };
-
-        var response = await HttpClient.PostAsJsonAsync<GetTodoRequest>("https://localhost:7116/api/todo/search", request);
-        if (response.IsSuccessStatusCode)
-        {
-            paginatedResponse = await response.Content.ReadFromJsonAsync<PaginatedResponseDto<TodoItemDto>>();
-            todos = paginatedResponse.Items.ToList();
-            totalPages = paginatedResponse.Pagination.TotalCount.Value % pageSize == 0 ? paginatedResponse.Pagination.TotalCount.Value / pageSize : (paginatedResponse.Pagination.TotalCount.Value / pageSize) + 1;
-            StateHasChanged();
-        }
-        else
-        {
-            IsDataEmpty = true;
-            StateHasChanged();
-        }
-    }
-
-    private async Task LoadCategoriesAsync()
-    {
-        categories = await HttpClient.GetFromJsonAsync<List<CategoryDto>>("https://localhost:7116/api/category");
-    }
-
-    protected void EditItem(TodoItemDto item)
-    {
-        editingItem = new TodoItemDto
-        {
-            Id = item.Id,
-            Title = item.Title,
-            Description = item.Description,
-            Category = item.Category,
-            Difficulty = item.Difficulty,
-            IsDone = item.IsDone
-        };
-    }
-
-    protected void CancelEdit()
-    {
-        editingItem = null;
-    }
-
-    protected async Task UpdateItem()
-    {
-        var response = await HttpClient.PutAsJsonAsync<TodoItemDto>($"https://localhost:7116/api/todo/{editingItem.Id}", editingItem);
-        if (response.IsSuccessStatusCode)
-        {
-            editingItem = null;
-            LoadPageAsync();
-        }
-    }
-
-    protected async Task DeleteItem(TodoItemDto item)
-    {
-        var response = await HttpClient.DeleteAsync($"https://localhost:7116/api/todo/{item.Id}");
-        if (response.IsSuccessStatusCode)
-        {
-            LoadPageAsync();
-        }
     }
 
 }
