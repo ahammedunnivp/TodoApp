@@ -1,0 +1,13 @@
+﻿@page "/test"
+@rendermode InteractiveServer
+<h3>Test</h3>
+<p>Current Count: @currentCount</p>
+<button class = "btn btn-primary" @onclick="IncrementCount">Click</button>
+
+@code {
+    private int currentCount = 0;
+    protected void IncrementCount()
+    {
+        currentCount++;
+    }
+}
