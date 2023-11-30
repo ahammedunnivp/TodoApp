@@ -1,0 +1,19 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/src/.vs/Unni.ToDo
+/src/Unni.ToDo.API/bin/Debug/net7.0
+/src/Unni.ToDo.API/Data/Db
+/src/Unni.ToDo.API/obj
+/src/Unni.ToDo.Tests/bin/Debug/net7.0
+/src/Unni.ToDo.Tests/obj
+/src/Unni.ToDo.Common/bin/Debug/net7.0
+/src/Unni.ToDo.Common/obj
+/src/.vs/ProjectEvaluation
+/src/BlazorApp1/bin/Debug/net8.0
+/src/Unni.ToDo.UI/bin/Debug/net8.0
+/src/Unni.ToDo.UI/obj
+/.vs/TodoApp/FileContentIndex
+/.vs
+/src/Unni.ToDo.UI/Unni.ToDo.UI.csproj.user
