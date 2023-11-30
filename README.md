@@ -3,7 +3,7 @@
 
 a simple yet powerful task management system.
 
-[Overview](#overview) | [Features](#features) | [Project Structure](#project-structure) |  [Installation](#installation) | [Usage](#usage) | [Examples](#examples) |
+[Overview](#overview) | [Features](#features) | [Project Structure](#project-structure) |  [Installation](#installation) | [Usage](#usage) | [API Endpoints](#api-endpoints) | [Testing](#tessting) |
 
 
 
@@ -14,7 +14,7 @@ The ToDo application simplifies task management, providing users with a seamless
 
 ## Features
 - **Effortless Task Management**: View, add, edit, categorize, and delete tasks effortlessly.
-- **Task Status Tracking**: Mark tasks as done to track completion status.
+- **Task Status Tracking**: Mark tasks as Done to track completion status.
 - **Categorisation**: Categorise tasks to better organise and prioritise.
 - **Advanced Filtering**: Utilise powerful filtering options to narrow down tasks based on various criteria.
 - **Sorting**: Arrange tasks based on difficulty, created order, or any other relevant parameter.
