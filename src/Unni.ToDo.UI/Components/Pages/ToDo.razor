@@ -4,13 +4,15 @@
 @using Unni.ToDo.Common.DTOs;
 <h3>ToDo List</h3>
 
-@if (todos == null)
+@if (todos == null && !IsDataEmpty)
 {
     <p>Loading...</p>
 }
 else
 {
-    <table class ="table">
+    <button @onclick="AddTask">Add Task</button>
+
+    <table class="table">
         <thead>
             <tr>
                 <th>ID</th>
@@ -23,76 +25,102 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach(var todo in todos)
+            @if (todos != null)
+            {
+                @foreach (var todo in todos)
+                {
+                    <tr>
+                        <td>@todo.Id</td>
+                        <td>
+                            @if (editingItem != null && editingItem.Id == todo.Id)
+                            {
+                                <input @bind="editingItem.Title" />
+                            }
+                            else
+                            {
+                                @todo.Title
+                            }
+                        </td>
+                        <td>
+                            @if (editingItem != null && editingItem.Id == todo.Id)
+                            {
+                                <input @bind="editingItem.Description" />
+                            }
+                            else
+                            {
+                                @todo.Description
+                            }
+                        </td>
+                        <td>
+                            @if (editingItem != null && editingItem.Id == todo.Id)
+                            {
+                                <select @bind="editingItem.Category">
+                                    <option value="">Select a category</option>
+                                    @foreach (var option in categories)
+                                    {
+                                        <option value="@option.Name">@option.Name</option>
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                @todo.Category
+                            }
+                        </td>
+                        <td>
+                            @if (editingItem != null && editingItem.Id == todo.Id)
+                            {
+                                <input @bind="editingItem.Difficulty" />
+                            }
+                            else
+                            {
+                                @todo.Difficulty
+                            }
+                        </td>
+                        <td>
+                            @if (editingItem != null && editingItem.Id == todo.Id)
+                            {
+                                <input type="checkbox" @bind="editingItem.IsDone" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" disabled checked="@todo.IsDone" />
+                            }
+                        </td>
+                        <td>
+                            @if (editingItem == null || editingItem.Id != todo.Id)
+                            {
+                                <button @onclick="() => EditItem(todo)">Edit</button>
+                            }
+                            else
+                            {
+                                <button @onclick="() => UpdateItem()">Update</button>
+                                <button @onclick="CancelEdit">Cancel</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            @if (showTaskInput)
             {
                 <tr>
-                    <td>@todo.Id</td>
+                    <td></td>
+                    <td><input @bind="newTask.Title" placeholder="Title" /></td>
+                    <td><input @bind="newTask.Description" placeholder="Description" /></td>
                     <td>
-                        @if (editingItem != null && editingItem.Id == todo.Id)
-                        {
-                            <input @bind="editingItem.Title" />
-                        }
-                        else
-                        {
-                            @todo.Title
-                        }
+                        <select @bind="newTask.Category">
+                            <option value="">Select a category</option>
+                            @foreach (var option in categories)
+                            {
+                                <option value="@option.Name">@option.Name</option>
+                            }
+                        </select>
                     </td>
+                    <td><input @bind="newTask.Difficulty" placeholder="Difficulty" /></td>
+                    <td><input type="checkbox" disabled /></td>
                     <td>
-                        @if (editingItem != null && editingItem.Id == todo.Id)
-                        {
-                            <input @bind="editingItem.Description" />
-                        }
-                        else
-                        {
-                            @todo.Description
-                        }
-                    </td>
-                    <td>
-                        @if (editingItem != null && editingItem.Id == todo.Id)
-                        {
-                            <select @bind="editingItem.Category">
-                                <option value="">Select a category</option>
-                                @foreach(var option in categories)
-                                {
-                                    <option value="@option.Name">@option.Name</option>
-                                }
-                            </select>
-                        }
-                        else
-                        {
-                            @todo.Category
-                        }
-                    </td>
-                    <td>
-                        @if (editingItem != null && editingItem.Id == todo.Id)
-                        {
-                            <input @bind="editingItem.Difficulty" />
-                        }
-                        else
-                        {
-                            @todo.Difficulty
-                        }
-                    </td>
-                    <td>
-                        @if (editingItem != null && editingItem.Id == todo.Id)
-                        {
-                            <input type="checkbox" @bind="editingItem.IsDone" />
-                        }
-                        else
-                        {
-                            <input type="checkbox" disabled checked="@todo.IsDone" />
-                        }
-                    </td>
-                    <td>
-                        @if (editingItem == null || editingItem.Id != todo.Id)
-                        {
-                            <button @onclick="() => EditItem(todo)">Edit</button>
-                        }
-                        else
-                        {
-                            <button @onclick="() => UpdateItem()">Update</button>
-                            <button @onclick="CancelEdit">Cancel</button>
-                        }
+                        <button @onclick="SaveNewTask">Save</button>
+                        <button @onclick="CancelAddTask">Cancel</button>
                     </td>
                 </tr>
             }
@@ -102,7 +130,7 @@ else
         <p>
             Page @currentPage of @totalPages
             <button type="button" @onclick="GoToPreviousPage" disabled="@IsFirstPage">Previous</button>
-            <button type = "button" @onclick="GoToNextPage" disabled="@IsLastPage">Next</button>
+            <button type="button" @onclick="GoToNextPage" disabled="@IsLastPage">Next</button>
         </p>
     </div>
 }
@@ -117,8 +145,12 @@ else
     private int pageSize = 5;
     private List<CategoryDto> categories;
 
+    private bool showTaskInput = false;
+    private CreateTodoRequest newTask = new CreateTodoRequest();
+
     private bool IsFirstPage => currentPage == 1;
-    private bool IsLastPage => currentPage == totalPages;
+    private bool IsLastPage => currentPage == totalPages || currentPage > totalPages;
+    private bool IsDataEmpty = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -144,22 +176,42 @@ else
         }
     }
 
+    private void AddTask()
+    {
+        showTaskInput = true;
+    }
+
+    private void SaveNewTask()
+    {
+    }
+
+    private void CancelAddTask()
+    {
+        showTaskInput = false;
+        newTask = new CreateTodoRequest();
+    }
+
     private async Task LoadPageAsync()
     {
         var pagination = new Pagination
-            {
+        {
 
-                PageSize = pageSize,
-                Page = currentPage
-            };
-        request = new GetTodoRequest { Pagination = pagination};
+            PageSize = pageSize,
+            Page = currentPage
+        };
+        request = new GetTodoRequest { Pagination = pagination };
 
         var response = await HttpClient.PostAsJsonAsync<GetTodoRequest>("https://localhost:7116/api/todo/search", request);
-        if(response.IsSuccessStatusCode)
+        if (response.IsSuccessStatusCode)
         {
             paginatedResponse = await response.Content.ReadFromJsonAsync<PaginatedResponseDto<TodoItemDto>>();
             todos = paginatedResponse.Items.ToList();
             totalPages = paginatedResponse.Pagination.TotalCount.Value % pageSize == 0 ? paginatedResponse.Pagination.TotalCount.Value / pageSize : (paginatedResponse.Pagination.TotalCount.Value / pageSize) + 1;
+            StateHasChanged();
+        }
+        else
+        {
+            IsDataEmpty = true;
             StateHasChanged();
         }
     }
@@ -171,8 +223,15 @@ else
 
     protected void EditItem(TodoItemDto item)
     {
-        editingItem = new TodoItemDto { Id = item.Id, Title = item.Title, Description = item.Description, 
-            Category = item.Category, Difficulty = item.Difficulty, IsDone = item.IsDone};
+        editingItem = new TodoItemDto
+        {
+            Id = item.Id,
+            Title = item.Title,
+            Description = item.Description,
+            Category = item.Category,
+            Difficulty = item.Difficulty,
+            IsDone = item.IsDone
+        };
     }
 
     protected void CancelEdit()
