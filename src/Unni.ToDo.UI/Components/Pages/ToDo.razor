@@ -10,7 +10,20 @@
 }
 else
 {
-    <button @onclick="AddTask">Add Task</button>
+    <div style="display: flex; justify-content: space-between;">
+        <button @onclick="AddTask">Add Task</button>
+        <button @onclick="ToggleShowPendingTasks">
+            @if (showOnlyPendingItems)
+            {
+                <span>Show all tasks</span>
+            }
+            else
+            {
+                <span>Show only pending tasks</span>
+            }
+        </button>
+    </div>
+    
 
     <table class="table">
         <thead>
@@ -91,6 +104,7 @@ else
                             @if (editingItem == null || editingItem.Id != todo.Id)
                             {
                                 <button @onclick="() => EditItem(todo)">Edit</button>
+                                <button @onclick="() => DeleteItem(todo)">Delete</button>
                             }
                             else
                             {
@@ -128,9 +142,33 @@ else
     </table>
     <div>
         <p>
-            Page @currentPage of @totalPages
+            <div style="display: flex; justify-content: space-between;">
+            <div>
+                Sorted By
+                    <select @onchange="SortFieldUpdated">
+                        <option value="Id">Id</option>
+                        <option value="Category">Category</option>
+                        <option value="Difficulty">Difficulty</option>
+                    </select>
+                    <select @onchange="SortOrderUpdated">
+                        <option value="Ascending">Ascending</option>
+                        <option value="Descending">Descending</option>
+                    </select>
+                    
+            </div>
+            <div>
             <button type="button" @onclick="GoToPreviousPage" disabled="@IsFirstPage">Previous</button>
-            <button type="button" @onclick="GoToNextPage" disabled="@IsLastPage">Next</button>
+                Page @currentPage of @totalPages
+                Showing 
+                <select @onchange="PageSizeChanged">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                </select>
+                results
+                <button type="button" @onclick="GoToNextPage" disabled="@IsLastPage">Next</button>
+            </div>
+            </div>
         </p>
     </div>
 }
@@ -138,7 +176,16 @@ else
 
     private PaginatedResponseDto<TodoItemDto> paginatedResponse;
     private List<TodoItemDto> todos;
+
     private GetTodoRequest request;
+    private ToDoFilter filter = new ToDoFilter();
+    private Pagination pagination = new Pagination
+        {
+            PageSize = 5,
+            SortField = "Id",
+            IsSortAscending = true
+        };
+
     private TodoItemDto editingItem;
     private int currentPage = 1;
     private int totalPages;
@@ -147,6 +194,8 @@ else
 
     private bool showTaskInput = false;
     private CreateTodoRequest newTask = new CreateTodoRequest();
+
+    private bool showOnlyPendingItems = false;
 
     private bool IsFirstPage => currentPage == 1;
     private bool IsLastPage => currentPage == totalPages || currentPage > totalPages;
@@ -167,6 +216,33 @@ else
         }
     }
 
+    private void PageSizeChanged(ChangeEventArgs e)
+    {
+        pageSize = Convert.ToInt32(e?.Value?.ToString());
+        pagination.PageSize = pageSize;
+        LoadPageAsync();
+    }
+
+    private void SortFieldUpdated(ChangeEventArgs e)
+    {
+        var sortField = e?.Value?.ToString();
+        pagination.SortField = sortField;
+        LoadPageAsync();
+    }
+
+    private void SortOrderUpdated(ChangeEventArgs e)
+    {
+        var sortOrder = e?.Value?.ToString();
+        pagination.IsSortAscending = sortOrder == "Ascending"? true:false;
+        LoadPageAsync();
+    }
+
+    private void ToggleShowPendingTasks()
+    {
+        showOnlyPendingItems = showOnlyPendingItems ? false : true;
+        LoadPageAsync();
+    }
+
     private void GoToNextPage()
     {
         if (!IsLastPage)
@@ -181,8 +257,34 @@ else
         showTaskInput = true;
     }
 
-    private void SaveNewTask()
+    private async Task SaveNewTask()
     {
+        var flag = await SaveNewTaskAsync(newTask);
+        if (flag)
+        {
+            showTaskInput = false;
+            newTask = new CreateTodoRequest();
+            StateHasChanged();
+        }
+
+    }
+
+    private async Task<bool> SaveNewTaskAsync(CreateTodoRequest todo)
+    {
+        var response = await HttpClient.PostAsJsonAsync<CreateTodoRequest>("https://localhost:7116/api/todo/", todo);
+        if (response.IsSuccessStatusCode)
+        {
+            var newItem = await response.Content.ReadFromJsonAsync<TodoItemDto>();
+            if (newItem != null)
+            {
+                todos.Add(newItem);
+            }
+            return true;
+        }
+        else
+        {
+            return false;
+        } 
     }
 
     private void CancelAddTask()
@@ -193,13 +295,15 @@ else
 
     private async Task LoadPageAsync()
     {
-        var pagination = new Pagination
+        bool isFilter = false;
+        pagination.Page = currentPage;
+        if (showOnlyPendingItems)
         {
-
-            PageSize = pageSize,
-            Page = currentPage
-        };
-        request = new GetTodoRequest { Pagination = pagination };
+            filter.IsDoneFilter = false;
+            isFilter = true;
+        }
+        
+        request = new GetTodoRequest { Pagination = pagination, Filter = filter, IsFilter = isFilter };
 
         var response = await HttpClient.PostAsJsonAsync<GetTodoRequest>("https://localhost:7116/api/todo/search", request);
         if (response.IsSuccessStatusCode)
@@ -245,6 +349,15 @@ else
         if (response.IsSuccessStatusCode)
         {
             editingItem = null;
+            LoadPageAsync();
+        }
+    }
+
+    protected async Task DeleteItem(TodoItemDto item)
+    {
+        var response = await HttpClient.DeleteAsync($"https://localhost:7116/api/todo/{item.Id}");
+        if (response.IsSuccessStatusCode)
+        {
             LoadPageAsync();
         }
     }
