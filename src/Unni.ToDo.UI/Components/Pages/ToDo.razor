@@ -361,6 +361,7 @@ else
     private void ToggleShowPendingTodos()
     {
         showOnlyPendingItems = showOnlyPendingItems ? false : true;
+        currentPage = 1;
         LoadPageAsync();
     }
 
