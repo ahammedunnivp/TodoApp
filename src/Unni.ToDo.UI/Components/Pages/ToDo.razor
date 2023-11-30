@@ -1,0 +1,368 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@inject HttpClient HttpClient;
+@using Unni.ToDo.Common.DTOs;
+<h2>ToDo List</h2>
+
+@if (todos == null && !IsDataEmpty)
+{
+    <p>Todos are loading...</p>
+}
+else
+{
+    <div style="display: flex; justify-content: space-between;">
+        <button @onclick="AddTodo">Add Todo +</button>
+        <button @onclick="ToggleShowPendingTodos">
+            @if (showOnlyPendingItems)
+            {
+                <span>Show all todos</span>
+            }
+            else
+            {
+                <span>Show only pending todos</span>
+            }
+        </button>
+    </div>
+    
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Difficulty</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (todos != null)
+            {
+                @foreach (var todo in todos)
+                {
+                    <tr>
+                        <td>@todo.Id</td>
+                        <td>
+                            @if (editingItem != null && editingItem.Id == todo.Id)
+                            {
+                                <input @bind="editingItem.Title" />
+                            }
+                            else
+                            {
+                                @todo.Title
+                            }
+                        </td>
+                        <td>
+                            @if (editingItem != null && editingItem.Id == todo.Id)
+                            {
+                                <input @bind="editingItem.Description" />
+                            }
+                            else
+                            {
+                                @todo.Description
+                            }
+                        </td>
+                        <td>
+                            @if (editingItem != null && editingItem.Id == todo.Id)
+                            {
+                                <select @bind="editingItem.Category">
+                                    <option value="">Select a category</option>
+                                    @foreach (var option in categories)
+                                    {
+                                        <option value="@option.Name">@option.Name</option>
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                @todo.Category
+                            }
+                        </td>
+                        <td>
+                            @if (editingItem != null && editingItem.Id == todo.Id)
+                            {
+                                <input @bind="editingItem.Difficulty" />
+                            }
+                            else
+                            {
+                                @todo.Difficulty
+                            }
+                        </td>
+                        <td>
+                            @if (editingItem != null && editingItem.Id == todo.Id)
+                            {
+                                <input type="checkbox" @bind="editingItem.IsDone" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" disabled checked="@todo.IsDone" />
+                            }
+                        </td>
+                        <td>
+                            @if (editingItem == null || editingItem.Id != todo.Id)
+                            {
+                                <button @onclick="() => EditItem(todo)">Edit</button>
+                                <button @onclick="() => DeleteItemAsync(todo)">Delete</button>
+                            }
+                            else
+                            {
+                                <button @onclick="() => UpdateItemAsync()">Update</button>
+                                <button @onclick="CancelEdit">Cancel</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            @if (showTodoInputControls)
+            {
+                <tr>
+                    <td></td>
+                    <td><input @bind="addTodoRequest.Title" placeholder="Title" /></td>
+                    <td><input @bind="addTodoRequest.Description" placeholder="Description" /></td>
+                    <td>
+                        <select @bind="addTodoRequest.Category">
+                            <option value="">Select a category</option>
+                            @foreach (var option in categories)
+                            {
+                                <option value="@option.Name">@option.Name</option>
+                            }
+                        </select>
+                    </td>
+                    <td><input @bind="addTodoRequest.Difficulty" placeholder="Difficulty" /></td>
+                    <td><input type="checkbox" disabled /></td>
+                    <td>
+                        <button @onclick="SaveNewTodo">Save</button>
+                        <button @onclick="CancelAddTodo">Cancel</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div>
+        <p>
+            <div style="display: flex; justify-content: space-between;">
+            <div>
+                Sorted By
+                    <select @onchange="SortFieldUpdated">
+                        <option value="Id">Id</option>
+                        <option value="Category">Category</option>
+                        <option value="Difficulty">Difficulty</option>
+                    </select>
+                    <select @onchange="SortOrderUpdated">
+                        <option value="Ascending">Ascending</option>
+                        <option value="Descending">Descending</option>
+                    </select>
+                    
+            </div>
+            <div>
+            <button type="button" @onclick="GoToPreviousPage" disabled="@IsFirstPage">Previous</button>
+                Page @currentPage of @totalPages
+                Showing 
+                <select @onchange="PageSizeChanged">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                </select>
+                results
+                <button type="button" @onclick="GoToNextPage" disabled="@IsLastPage">Next</button>
+            </div>
+            </div>
+        </p>
+    </div>
+}
+@code{
+
+    private List<TodoItemDto> todos;
+    private List<CategoryDto> categories;
+
+    private int currentPage = 1;
+    private int totalPages;
+    private int pageSize = 5;
+
+    private GetTodoRequest searchRequest;
+    private CreateTodoRequest addTodoRequest = new CreateTodoRequest();
+
+    private ToDoFilter filter = new ToDoFilter();
+    private Pagination pagination = new Pagination
+        {
+            PageSize = 5,
+            SortField = "Id",
+            IsSortAscending = true
+        };
+
+    private PaginatedResponseDto<TodoItemDto> paginatedResponse;
+
+    private TodoItemDto editingItem;
+
+    private bool showTodoInputControls = false;
+    private bool showOnlyPendingItems = false;
+
+    private bool IsFirstPage => currentPage == 1;
+    private bool IsLastPage => currentPage == totalPages || currentPage > totalPages;
+    private bool IsDataEmpty = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPageAsync();
+        await LoadCategoriesAsync();
+    }
+
+    private async Task LoadCategoriesAsync()
+    {
+        categories = await HttpClient.GetFromJsonAsync<List<CategoryDto>>("https://localhost:7116/api/category");
+    }
+
+    private async Task LoadPageAsync()
+    {
+        bool isFilter = false;
+        pagination.Page = currentPage;
+        if (showOnlyPendingItems)
+        {
+            filter.IsDoneFilter = false;
+            isFilter = true;
+        }
+
+        searchRequest = new GetTodoRequest { Pagination = pagination, Filter = filter, IsFilter = isFilter };
+
+        var response = await HttpClient.PostAsJsonAsync<GetTodoRequest>("https://localhost:7116/api/todo/search", searchRequest);
+        if (response.IsSuccessStatusCode)
+        {
+            paginatedResponse = await response.Content.ReadFromJsonAsync<PaginatedResponseDto<TodoItemDto>>();
+            todos = paginatedResponse.Items.ToList();
+            totalPages = paginatedResponse.Pagination.TotalCount.Value % pageSize == 0 ? paginatedResponse.Pagination.TotalCount.Value / pageSize : (paginatedResponse.Pagination.TotalCount.Value / pageSize) + 1;
+            StateHasChanged();
+        }
+        else
+        {
+            IsDataEmpty = true;
+            StateHasChanged();
+        }
+    }
+
+    private async Task<bool> SaveNewTodoAsync(CreateTodoRequest todo)
+    {
+        var response = await HttpClient.PostAsJsonAsync<CreateTodoRequest>("https://localhost:7116/api/todo/", todo);
+        if (response.IsSuccessStatusCode)
+        {
+            var newItem = await response.Content.ReadFromJsonAsync<TodoItemDto>();
+            if (newItem != null)
+            {
+                todos.Add(newItem);
+            }
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    protected async Task UpdateItemAsync()
+    {
+        var response = await HttpClient.PutAsJsonAsync<TodoItemDto>($"https://localhost:7116/api/todo/{editingItem.Id}", editingItem);
+        if (response.IsSuccessStatusCode)
+        {
+            editingItem = null;
+            LoadPageAsync();
+        }
+    }
+
+    protected async Task DeleteItemAsync(TodoItemDto item)
+    {
+        var response = await HttpClient.DeleteAsync($"https://localhost:7116/api/todo/{item.Id}");
+        if (response.IsSuccessStatusCode)
+        {
+            LoadPageAsync();
+        }
+    }
+
+    private void AddTodo()
+    {
+        showTodoInputControls = true;
+    }
+
+    private async Task SaveNewTodo()
+    {
+        var flag = await SaveNewTodoAsync(addTodoRequest);
+        if (flag)
+        {
+            showTodoInputControls = false;
+            addTodoRequest = new CreateTodoRequest();
+            StateHasChanged();
+        }
+
+    }
+
+    private void CancelAddTodo()
+    {
+        showTodoInputControls = false;
+        addTodoRequest = new CreateTodoRequest();
+    }
+
+    protected void EditItem(TodoItemDto item)
+    {
+        editingItem = new TodoItemDto
+        {
+            Id = item.Id,
+            Title = item.Title,
+            Description = item.Description,
+            Category = item.Category,
+            Difficulty = item.Difficulty,
+            IsDone = item.IsDone
+        };
+    }
+
+    protected void CancelEdit()
+    {
+        editingItem = null;
+    }
+
+    private void GoToPreviousPage()
+    {
+        if (!IsFirstPage)
+        {
+            currentPage--;
+            LoadPageAsync();
+        }
+    }
+
+    private void GoToNextPage()
+    {
+        if (!IsLastPage)
+        {
+            currentPage++;
+            LoadPageAsync();
+        }
+    }
+
+    private void PageSizeChanged(ChangeEventArgs e)
+    {
+        pageSize = Convert.ToInt32(e?.Value?.ToString());
+        pagination.PageSize = pageSize;
+        LoadPageAsync();
+    }
+
+    private void SortFieldUpdated(ChangeEventArgs e)
+    {
+        var sortField = e?.Value?.ToString();
+        pagination.SortField = sortField;
+        LoadPageAsync();
+    }
+
+    private void SortOrderUpdated(ChangeEventArgs e)
+    {
+        var sortOrder = e?.Value?.ToString();
+        pagination.IsSortAscending = sortOrder == "Ascending" ? true : false;
+        LoadPageAsync();
+    }
+
+    private void ToggleShowPendingTodos()
+    {
+        showOnlyPendingItems = showOnlyPendingItems ? false : true;
+        currentPage = 1;
+        LoadPageAsync();
+    }
+
+}
