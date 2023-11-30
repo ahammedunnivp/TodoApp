@@ -3,7 +3,7 @@
 
 a simple yet powerful task management system.
 
-[Overview](#overview) | [Features](#features) | [Project Structure](#project-structure) |  [Installation](#installation) | [Usage](#usage) | [API Endpoints](#api-endpoints) | [Testing](#tessting) |
+[Overview](#overview) | [Features](#features) | [Project Structure](#project-structure) |  [Installation](#installation) | [Usage](#usage) | [API Endpoints](#api-endpoints) | [Testing](#testing) | [Design](#design-decisions)
 
 
 
