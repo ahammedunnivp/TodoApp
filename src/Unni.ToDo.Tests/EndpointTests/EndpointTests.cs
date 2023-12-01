@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using Unni.ToDo.API;
 using Unni.ToDo.API.Data.Repositories;
+using Unni.ToDo.API.Enums;
 using Unni.ToDo.Common.DTOs;
 using Unni.ToDo.Common.Models;
 
@@ -130,6 +131,26 @@ namespace Unni.ToDo.Tests.EndpointTests
             Assert.Equal(System.Net.HttpStatusCode.BadRequest, resp.StatusCode);
         }
 
+        [Theory]
+        [InlineData("New Task", "Newly added", "Work", 5)]
+        public async void ToDo_AddToDo_ReturnsBadRequest_IfMalformedRequest(string title, string description, string category, int difficulty)
+        {
+            var dto = new
+            { 
+                NewTitle = title,
+                Description = description,
+                Category = category,
+                Difficulty = difficulty
+            };
+            var jsonContent = new StringContent(JsonSerializer.Serialize(dto), Encoding.UTF8, "application/json");
+
+            var resp = await _client.PostAsync("api/todo", jsonContent);
+
+            Assert.Equal(System.Net.HttpStatusCode.BadRequest, resp.StatusCode);
+        }
+
+
+        
         [Theory]
         [InlineData("New task without details")]
         public async void AddToDo_CreatedRequest_With_NullableData_ReturnsTodoItem(string title)
