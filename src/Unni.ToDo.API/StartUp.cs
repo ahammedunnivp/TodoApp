@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Unni.ToDo.API.Data.Repositories;
 using Unni.ToDo.API.Data.UnitOfWork;
+using Unni.ToDo.API.Filters;
 using Unni.ToDo.API.Services;
 using Unni.ToDo.Common.Interfaces;
 
@@ -51,7 +52,10 @@ namespace Unni.ToDo.API
         }
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.Filters.Add(new ValidateModelAttribute());
+            });
             services.AddSingleton(Configuration);
 
             services.AddMemoryCache();
