@@ -17,3 +17,7 @@
 /.vs/TodoApp/FileContentIndex
 /.vs
 /src/Unni.ToDo.UI/Unni.ToDo.UI.csproj.user
+/tests/Unni.ToDo.FunctionalTests/bin/Debug/net7.0
+/tests/Unni.ToDo.FunctionalTests/obj
+/tests/Unni.ToDo.UnitTests/bin/Debug/net7.0
+/tests/Unni.ToDo.UnitTests/obj
