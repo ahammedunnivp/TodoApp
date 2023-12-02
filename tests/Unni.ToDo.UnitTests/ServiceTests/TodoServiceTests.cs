@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Moq;
-using Unni.ToDo.API.Services;
 using Unni.ToDo.Core.DTOs;
 using Unni.ToDo.Core.Interfaces;
 using Unni.ToDo.Core.Models;
+using Unni.ToDo.Core.Services;
 
 namespace Unni.ToDo.Tests.ServiceTests
 {
