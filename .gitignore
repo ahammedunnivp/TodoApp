@@ -21,3 +21,8 @@
 /tests/Unni.ToDo.FunctionalTests/obj
 /tests/Unni.ToDo.UnitTests/bin/Debug/net7.0
 /tests/Unni.ToDo.UnitTests/obj
+/src/Unni.ToDo.Core/bin/Debug/net7.0
+/src/Unni.ToDo.Core/obj
+/src/Unni.ToDo.Infrastructure/bin/Debug/net7.0
+/src/Unni.ToDo.Infrastructure/obj
+/Unni.ToDo.Infrastructure/obj

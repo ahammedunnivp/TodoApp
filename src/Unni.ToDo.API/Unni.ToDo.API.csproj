@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Unni.ToDo.Common\Unni.ToDo.Common.csproj" />
+    <ProjectReference Include="..\Unni.ToDo.Core\Unni.ToDo.Core.csproj" />
+    <ProjectReference Include="..\Unni.ToDo.Infrastructure\Unni.ToDo.Infrastructure.csproj" />
   </ItemGroup>
-
 </Project>

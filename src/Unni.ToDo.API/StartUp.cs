@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Unni.ToDo.API.Data.Repositories;
-using Unni.ToDo.API.Data.UnitOfWork;
 using Unni.ToDo.API.Filters;
 using Unni.ToDo.API.Services;
-using Unni.ToDo.Common.Interfaces;
+using Unni.ToDo.Core.Interfaces;
+using Unni.ToDo.Infrastructure.Data.Repositories;
+using Unni.ToDo.Infrastructure.Data.UnitOfWork;
 
 namespace Unni.ToDo.API
 {

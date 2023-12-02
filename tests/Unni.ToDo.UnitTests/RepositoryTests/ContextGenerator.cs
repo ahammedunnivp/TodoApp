@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Unni.ToDo.API.Data.Repositories;
+using Unni.ToDo.Infrastructure.Data.Repositories;
 
 namespace Unni.ToDo.Tests.RepositoryTests
 {

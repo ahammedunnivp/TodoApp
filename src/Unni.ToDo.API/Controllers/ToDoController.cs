@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Unni.ToDo.Common.DTOs;
-using Unni.ToDo.Common.Interfaces;
+using Unni.ToDo.Core.DTOs;
+using Unni.ToDo.Core.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

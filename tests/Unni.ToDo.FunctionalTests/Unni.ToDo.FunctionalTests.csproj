@@ -25,6 +25,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Unni.ToDo.API\Unni.ToDo.API.csproj" />
+    <ProjectReference Include="..\..\src\Unni.ToDo.Core\Unni.ToDo.Core.csproj" />
+    <ProjectReference Include="..\..\src\Unni.ToDo.Infrastructure\Unni.ToDo.Infrastructure.csproj" />
   </ItemGroup>
+
 
 </Project>
