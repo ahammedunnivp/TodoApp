@@ -6,10 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Text;
 using System.Text.Json;
 using Unni.ToDo.API;
-using Unni.ToDo.API.Data.Repositories;
-using Unni.ToDo.API.Enums;
-using Unni.ToDo.Common.DTOs;
-using Unni.ToDo.Common.Models;
+using Unni.ToDo.Core.Models;
+using Unni.ToDo.Core.DTOs;
+using Unni.ToDo.Infrastructure.Data.Repositories;
 
 namespace Unni.ToDo.Tests.EndpointTests
 {

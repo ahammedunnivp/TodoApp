@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Unni.ToDo.API;
 
-namespace Unni.ToDo
+namespace Unni.ToDo.API
 {
     public class Program
     {

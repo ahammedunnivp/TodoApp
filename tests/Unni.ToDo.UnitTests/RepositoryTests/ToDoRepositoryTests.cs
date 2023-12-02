@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
-using Unni.ToDo.API.Data.Repositories;
-using Unni.ToDo.Common.Models;
+using Unni.ToDo.Core.Models;
+using Unni.ToDo.Infrastructure.Data.Repositories;
 
 namespace Unni.ToDo.Tests.RepositoryTests
 {

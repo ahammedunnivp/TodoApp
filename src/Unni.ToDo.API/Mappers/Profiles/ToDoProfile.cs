@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Unni.ToDo.Common.DTOs;
-using Unni.ToDo.Common.Models;
+using Unni.ToDo.Core.DTOs;
+using Unni.ToDo.Core.Models;
 
 namespace Unni.ToDo.API.Mappers.Profiles
 {

@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using Unni.ToDo.API.Controllers;
-using Unni.ToDo.Common.DTOs;
-using Unni.ToDo.Common.Interfaces;
+using Unni.ToDo.Core.DTOs;
+using Unni.ToDo.Core.Interfaces;
 
 namespace Unni.ToDo.Tests.ControllerTests
 {

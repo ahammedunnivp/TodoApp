@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Unni.ToDo.Common\Unni.ToDo.Common.csproj" />
+    <ProjectReference Include="..\Unni.ToDo.Common\Unni.ToDo.Core.csproj" />
+    <ProjectReference Include="..\Unni.ToDo.Core\Unni.ToDo.Core.csproj" />
   </ItemGroup>
 
 </Project>
