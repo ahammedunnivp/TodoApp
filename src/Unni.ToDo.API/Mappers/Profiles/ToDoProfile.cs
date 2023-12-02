@@ -12,11 +12,6 @@ namespace Unni.ToDo.API.Mappers.Profiles
             CreateMap<TodoItemDto, TodoItemEntity>();
             CreateMap<CreateTodoRequest, TodoItemEntity>();
             CreateMap<CreateTodoRequest, TodoItemDto>();
-
-            CreateMap<CategoryEntity, CategoryDto>();
-            CreateMap<CategoryDto, CategoryEntity>();
-            CreateMap<AddCategoryRequest, CategoryEntity>();
-            CreateMap<AddCategoryRequest, CategoryDto>();
         }
     }
 }

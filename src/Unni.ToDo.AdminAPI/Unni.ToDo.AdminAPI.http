@@ -1,0 +1,6 @@
+@Unni.ToDo.AdminAPI_HostAddress = http://localhost:5005
+
+GET {{Unni.ToDo.AdminAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Unni.ToDo.API.Filters;
-using Unni.ToDo.API.Services;
 using Unni.ToDo.Core.Interfaces;
+using Unni.ToDo.Core.Services;
 using Unni.ToDo.Infrastructure.Data.Repositories;
 using Unni.ToDo.Infrastructure.Data.UnitOfWork;
 
@@ -68,18 +68,16 @@ namespace Unni.ToDo.API
             });
             services.AddDbContext<ToDoDBContext>(options =>
                     options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDbContext<AdminDbContext>(options =>
-                    options.UseSqlite(Configuration.GetConnectionString("AdminConnection")));
 
 
             services.AddScoped<ITodoRepository, TodoItemRepository>();
-            services.AddScoped<IAdminRepository, AdminRepository>();
+
 
             services.AddScoped<ITodoUnitOfWork, TodoUnitOfWork>();
-            services.AddScoped<IAdminUnitOfWork, AdminUnitOfWork>();
+
 
             services.AddScoped<ITodoService, TodoService>();
-            services.AddScoped<IAdminService, AdminService>();
+
 
             services.AddAutoMapper(typeof(Startup));
 

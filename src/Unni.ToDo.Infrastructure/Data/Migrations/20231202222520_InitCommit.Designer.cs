@@ -2,17 +2,20 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Unni.ToDo.Infrastructure.Data.Repositories;
 
 #nullable disable
 
-namespace Unni.ToDo.API.Migrations
+namespace Unni.ToDo.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ToDoDBContext))]
-    partial class ToDoDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231202222520_InitCommit")]
+    partial class InitCommit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.14");

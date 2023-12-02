@@ -26,3 +26,8 @@
 /src/Unni.ToDo.Infrastructure/bin/Debug/net7.0
 /src/Unni.ToDo.Infrastructure/obj
 /Unni.ToDo.Infrastructure/obj
+/src/Unni.ToDo.AdminAPI/bin/Debug/net8.0
+/src/Unni.ToDo.AdminAPI/Data/db
+/src/Unni.ToDo.AdminAPI/obj
+/src/Unni.ToDo.AdminAPI/Properties
+/Unni.ToDo.AdminAPI/obj

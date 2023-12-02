@@ -3,7 +3,7 @@ using Unni.ToDo.Core.DTOs;
 using Unni.ToDo.Core.Interfaces;
 using Unni.ToDo.Core.Models;
 
-namespace Unni.ToDo.API.Services
+namespace Unni.ToDo.Core.Services
 {
     public class TodoService : ITodoService
     {

@@ -4,8 +4,9 @@ using Unni.ToDo.Core.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace Unni.ToDo.API.Controllers
+namespace Unni.ToDo.AdminAPI.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase
@@ -13,15 +14,16 @@ namespace Unni.ToDo.API.Controllers
         private readonly IAdminService _service;
         private readonly ILogger _logger;
 
-        public CategoryController(IAdminService service, ILogger<ToDoController> logger)
+        public CategoryController(IAdminService service, ILogger<CategoryController> logger)
         {
             _service = service;
             _logger = logger;
 
         }
+
+
         // GET: api/<CategoryController>
         [HttpGet]
-        [ResponseCache(Duration = 60)]
         public IActionResult Get()
         {
             _logger.LogInformation("Entering {Controller}/{Action}", nameof(CategoryController), nameof(Get));

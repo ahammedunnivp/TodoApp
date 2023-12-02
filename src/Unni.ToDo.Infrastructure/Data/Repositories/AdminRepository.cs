@@ -41,7 +41,7 @@ namespace Unni.ToDo.Infrastructure.Data.Repositories
         public IEnumerable<CategoryEntity> GetAllCategories()
         {
             _logger.LogInformation("Fething category items from DB");
-            return _dbContext.Categories.AsNoTracking().ToList();
+            return _dbContext.Categories.AsQueryable().ToList();
         }
 
         public CategoryEntity GetCategoryById(int categoryId)
