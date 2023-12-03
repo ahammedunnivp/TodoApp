@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Unni.ToDo.Core.DTOs;
-using Unni.ToDo.Core.Interfaces;
+using Unni.Admin.Application.DTOs;
+using Unni.Admin.Application.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace Unni.ToDo.AdminAPI.Controllers
+namespace Unni.AdminAPI.Controllers
 {
 
     [Route("api/[controller]")]

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Unni.ToDo.Core.DTOs;
-using Unni.ToDo.Core.Models;
+using Unni.Admin.Application.DTOs;
+using Unni.Admin.Domain.Entities;
 
-namespace Unni.ToDo.API.Mappers.Profiles
+namespace Unni.Admin.Application.AutoMapperProfile
 {
     public class CategoryProfile : Profile
     {
