@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.Admin.UnniTests", "..\..\tests\AdminService.Tests\Unni.Admin.UnniTests\Unni.Admin.UnniTests.csproj", "{DED474AE-82CB-43E4-971E-FD5265110014}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.Admin.FunctionalTests", "..\..\tests\AdminService.Tests\Unni.Admin.FunctionalTests\Unni.Admin.FunctionalTests.csproj", "{324D411F-B1C7-4FF8-846B-6034F2CE5B0E}"
+
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{171E1C54-4264-4593-A99E-54CA7D2F6992}"
 EndProject
