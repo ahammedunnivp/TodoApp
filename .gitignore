@@ -58,9 +58,13 @@
 /tests/ToDoService.Tests/Unni.ToDo.UnitTests/obj
 /src/AdminService/Unni.Admin.WebAPI/bin/Debug/net8.0
 /src/AdminService/Unni.Admin.WebAPI/Data/db
+/src/AdminService/Unni.Admin.WebAPI/obj/Debug/net8.0
 /src/AdminService/Unni.Admin.WebAPI/obj
 /src/ToDoService/.vs/TodoService
 /src/ToDoService/Unni.ToDo.WebAPI/bin/Debug/net7.0
 /src/ToDoService/Unni.ToDo.WebAPI/Data/Db
+/src/ToDoService/Unni.ToDo.WebAPI/obj/Debug/net7.0
+/src/ToDoService/Unni.ToDo.WebAPI/obj/Release/net7.0
+/src/ToDoService/Unni.ToDo.WebAPI/obj
 /src/ToDoService/Unni.ToDo.WebAPI/obj
 /tests/ToDoService.Tests/Unni.ToDo.UnitTests/obj
