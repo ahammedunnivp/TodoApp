@@ -66,3 +66,5 @@
 /src/ToDoService/Unni.ToDo.WebAPI/obj/Debug/net7.0
 /src/ToDoService/Unni.ToDo.WebAPI/obj/Release/net7.0
 /src/ToDoService/Unni.ToDo.WebAPI/obj
+/src/ToDoService/Unni.ToDo.WebAPI/obj
+/tests/ToDoService.Tests/Unni.ToDo.UnitTests/obj
