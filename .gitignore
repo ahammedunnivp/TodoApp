@@ -59,3 +59,4 @@
 /src/AdminService/Unni.Admin.WebAPI/bin/Debug/net8.0
 /src/AdminService/Unni.Admin.WebAPI/Data/db
 /src/AdminService/Unni.Admin.WebAPI/obj
+/tests/ToDoService.Tests/Unni.ToDo.UnitTests/obj
