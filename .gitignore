@@ -56,3 +56,6 @@
 /tests/ToDoService.Tests/Unni.ToDo.FunctionalTests/obj
 /tests/ToDoService.Tests/Unni.ToDo.UnitTests/bin/Debug/net7.0
 /tests/ToDoService.Tests/Unni.ToDo.UnitTests/obj
+/src/AdminService/Unni.Admin.WebAPI/bin/Debug/net8.0
+/src/AdminService/Unni.Admin.WebAPI/Data/db
+/src/AdminService/Unni.Admin.WebAPI/obj
