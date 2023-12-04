@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Unni.Todo.Application.AutoMapperProfile;
+using Unni.Todo.Application.Interfaces;
+using Unni.Todo.Application.Services;
+using Unni.Todo.Infrastructure.Context;
+using Unni.Todo.Infrastructure.Repositories;
+using Unni.Todo.Infrastructure.UnitOfWork;
 using Unni.Todo.WebAPI.Filters;
-using Unni.ToDo.Core.Interfaces;
-using Unni.ToDo.Core.Services;
-using Unni.ToDo.Infrastructure.Data.Repositories;
-using Unni.ToDo.Infrastructure.Data.UnitOfWork;
+
 
 namespace Unni.Todo.WebAPI
 {
@@ -79,7 +82,7 @@ namespace Unni.Todo.WebAPI
             services.AddScoped<ITodoService, TodoService>();
 
 
-            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(typeof(ToDoProfile));
 
             services.AddSwaggerGen();
             services.AddEndpointsApiExplorer();
