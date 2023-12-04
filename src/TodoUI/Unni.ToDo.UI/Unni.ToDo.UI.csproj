@@ -6,9 +6,4 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Unni.ToDo.Common\Unni.ToDo.Core.csproj" />
-    <ProjectReference Include="..\Unni.ToDo.Core\Unni.ToDo.Core.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -5,9 +5,6 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Unni.Todo.Infrastructure.Context;
 
-
-
-
 #nullable disable
 
 namespace Unni.ToDo.Infrastructure.Data.Migrations
@@ -18,9 +15,9 @@ namespace Unni.ToDo.Infrastructure.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.14");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.0-rc.2.23480.1");
 
-            modelBuilder.Entity("Unni.ToDo.Core.Models.TodoItemEntity", b =>
+            modelBuilder.Entity("Unni.Todo.Domain.Entities.TodoItemEntity", b =>
                 {
                     b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()

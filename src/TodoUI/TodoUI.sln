@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34322.80
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{06B7EBB8-76C7-4018-BA18-E9D34B63F526}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.ToDo.UI", "Unni.ToDo.UI\Unni.ToDo.UI.csproj", "{AB504A65-5480-4F7A-B829-3B2D0ECEB847}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AB504A65-5480-4F7A-B829-3B2D0ECEB847}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB504A65-5480-4F7A-B829-3B2D0ECEB847}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB504A65-5480-4F7A-B829-3B2D0ECEB847}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB504A65-5480-4F7A-B829-3B2D0ECEB847}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AB504A65-5480-4F7A-B829-3B2D0ECEB847} = {06B7EBB8-76C7-4018-BA18-E9D34B63F526}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {942D3F81-FD33-4160-BB80-CF5B8C67AB79}
+	EndGlobalSection
+EndGlobal
