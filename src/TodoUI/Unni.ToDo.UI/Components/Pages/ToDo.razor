@@ -1,7 +1,8 @@
 ﻿@page "/"
+@using Unni.ToDo.UI.DTOs.Admin;
+@using Unni.ToDo.UI.DTOs.Todo;
 @rendermode InteractiveServer
 @inject HttpClient HttpClient;
-@using Unni.ToDo.Core.DTOs;
 <h2>ToDo List</h2>
 
 @if (todos == null && !IsDataEmpty)
@@ -174,14 +175,14 @@ else
 }
 @code{
 
-    private List<TodoItemDto> todos;
+    private List<TodoDto> todos;
     private List<CategoryDto> categories;
 
     private int currentPage = 1;
     private int totalPages;
     private int pageSize = 5;
 
-    private GetTodoRequest searchRequest;
+    private TodoFilterRequest searchRequest;
     private CreateTodoRequest addTodoRequest = new CreateTodoRequest();
 
     private ToDoFilter filter = new ToDoFilter();
@@ -192,9 +193,9 @@ else
             IsSortAscending = true
         };
 
-    private PaginatedResponseDto<TodoItemDto> paginatedResponse;
+    private PaginatedResponse<TodoDto> paginatedResponse;
 
-    private TodoItemDto editingItem;
+    private TodoDto editingItem;
 
     private bool showTodoInputControls = false;
     private bool showOnlyPendingItems = false;
@@ -211,7 +212,7 @@ else
 
     private async Task LoadCategoriesAsync()
     {
-        categories = await HttpClient.GetFromJsonAsync<List<CategoryDto>>("https://localhost:7116/api/category");
+        categories = await HttpClient.GetFromJsonAsync<List<CategoryDto>>("https://localhost:7282/api/category");
     }
 
     private async Task LoadPageAsync()
@@ -224,12 +225,12 @@ else
             isFilter = true;
         }
 
-        searchRequest = new GetTodoRequest { Pagination = pagination, Filter = filter, IsFilter = isFilter };
+        searchRequest = new TodoFilterRequest { Pagination = pagination, Filter = filter, IsFilter = isFilter };
 
-        var response = await HttpClient.PostAsJsonAsync<GetTodoRequest>("https://localhost:7116/api/todo/search", searchRequest);
+        var response = await HttpClient.PostAsJsonAsync<TodoFilterRequest>("https://localhost:7116/api/todo/search", searchRequest);
         if (response.IsSuccessStatusCode)
         {
-            paginatedResponse = await response.Content.ReadFromJsonAsync<PaginatedResponseDto<TodoItemDto>>();
+            paginatedResponse = await response.Content.ReadFromJsonAsync<PaginatedResponse<TodoDto>>();
             todos = paginatedResponse.Items.ToList();
             totalPages = paginatedResponse.Pagination.TotalCount.Value % pageSize == 0 ? paginatedResponse.Pagination.TotalCount.Value / pageSize : (paginatedResponse.Pagination.TotalCount.Value / pageSize) + 1;
             StateHasChanged();
@@ -246,7 +247,7 @@ else
         var response = await HttpClient.PostAsJsonAsync<CreateTodoRequest>("https://localhost:7116/api/todo/", todo);
         if (response.IsSuccessStatusCode)
         {
-            var newItem = await response.Content.ReadFromJsonAsync<TodoItemDto>();
+            var newItem = await response.Content.ReadFromJsonAsync<TodoDto>();
             if (newItem != null)
             {
                 todos.Add(newItem);
@@ -261,7 +262,7 @@ else
 
     protected async Task UpdateItemAsync()
     {
-        var response = await HttpClient.PutAsJsonAsync<TodoItemDto>($"https://localhost:7116/api/todo/{editingItem.Id}", editingItem);
+        var response = await HttpClient.PutAsJsonAsync<TodoDto>($"https://localhost:7116/api/todo/{editingItem.Id}", editingItem);
         if (response.IsSuccessStatusCode)
         {
             editingItem = null;
@@ -269,7 +270,7 @@ else
         }
     }
 
-    protected async Task DeleteItemAsync(TodoItemDto item)
+    protected async Task DeleteItemAsync(TodoDto item)
     {
         var response = await HttpClient.DeleteAsync($"https://localhost:7116/api/todo/{item.Id}");
         if (response.IsSuccessStatusCode)
@@ -301,9 +302,9 @@ else
         addTodoRequest = new CreateTodoRequest();
     }
 
-    protected void EditItem(TodoItemDto item)
+    protected void EditItem(TodoDto item)
     {
-        editingItem = new TodoItemDto
+        editingItem = new TodoDto
         {
             Id = item.Id,
             Title = item.Title,
