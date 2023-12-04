@@ -77,3 +77,6 @@
 /src/ToDoService/Unni.ToDo.Infrastructure/bin/Debug/net8.0
 /src/ToDoService/Unni.ToDo.WebAPI/bin/Debug/net8.0
 /tests/ToDoService.Tests/Unni.Todo.FunctionalTests/bin/Debug/net8.0
+/src/TodoUI/.vs/TodoUI/v17
+/src/TodoUI/.vs/TodoUI/FileContentIndex
+/src/TodoUI/Unni.ToDo.UI/obj
