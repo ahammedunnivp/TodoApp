@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Unni.Todo.Application.DTOs;
+using Unni.Todo.Application.Interfaces;
 using Unni.Todo.WebAPI.Controllers;
-using Unni.ToDo.Core.DTOs;
-using Unni.ToDo.Core.Interfaces;
 
 namespace Unni.ToDo.Tests.ControllerTests
 {

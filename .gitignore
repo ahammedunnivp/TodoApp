@@ -69,3 +69,11 @@
 /src/ToDoService/Unni.ToDo.WebAPI/obj
 /tests/ToDoService.Tests/Unni.ToDo.UnitTests/obj
 /src/ToDoService/.vs/ProjectEvaluation
+/src/ToDoService/Unni.Todo.Application/bin/Debug/net8.0
+/src/ToDoService/Unni.Todo.Application/obj
+/src/ToDoService/Unni.ToDo.Core/bin/Debug/net8.0
+/src/ToDoService/Unni.Todo.Domain/bin/Debug/net8.0
+/src/ToDoService/Unni.Todo.Domain/obj
+/src/ToDoService/Unni.ToDo.Infrastructure/bin/Debug/net8.0
+/src/ToDoService/Unni.ToDo.WebAPI/bin/Debug/net8.0
+/tests/ToDoService.Tests/Unni.Todo.FunctionalTests/bin/Debug/net8.0
