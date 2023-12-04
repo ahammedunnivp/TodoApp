@@ -171,7 +171,7 @@ namespace Unni.Todo.FunctionalTests.Endpoints
         }
 
         [Theory]
-        [InlineData(20, "Update Task", "updated added", "Work", 5, true)]
+        [InlineData(200, "Update Task", "updated added", "Work", 5, true)]
         public async void UpdateToDo_SholdReturn_NotFound_WhenNoItem(int id, string title, string description, string category, int difficulty, bool isDone)
         {
             var dto = new TodoItemDto
