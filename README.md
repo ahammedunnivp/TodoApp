@@ -62,12 +62,10 @@ Before you start, ensure you have the following prerequisites installed on your 
 5. **Initialise Database**: This app is using a SQLite to store all the data, which is keeping all the data in disk. We are using Entity Framework as an ORM framework, so the database can be initialised using the following commands. 
 	1. Todo DB - Open the terminal from the Unni.Todo.Infrastructure project.
    ```bash
-   dotnet ef migrations add InitialMigration -c ToDoDBContext
    dotnet ef database update -c ToDoDBContext
 ```
 	2. Admin DB - Open the terminal from the Unni.Admin.Infrastructure project.
 ```bash
-   dotnet ef migrations add InitialMigration -c AdminToDoContext
    dotnet ef database update -c AdminToDoContext
    ```
 
