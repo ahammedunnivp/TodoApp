@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Net;
 using Unni.Admin.Application.AutoMapperProfile;
 using Unni.Admin.Application.Interfaces;
 using Unni.Admin.Application.Services;
@@ -45,12 +48,33 @@ namespace Unni.AdminAPI
             }
             else
             {
-                app.UseExceptionHandler();
+                app.UseHsts();
+                app.UseHttpsRedirection();
+                app.UseExceptionHandler(errorApp =>
+                {
+                    errorApp.Run(async context =>
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        context.Response.ContentType = "application/json";
+
+                        var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+                        var exception = exceptionHandlerPathFeature?.Error;
+
+                        var response = new
+                        {
+                            StatusCode = context.Response.StatusCode,
+                            Message = "An unexpected error occurred.",
+                            Exception = exception?.Message 
+                        };
+
+                        await context.Response.WriteAsJsonAsync(response);
+                    });
+                });
+
             }
             app.UseSwagger();
             app.UseSwaggerUI();
             app.UseRouting();
-            app.UseHttpsRedirection();
             app.UseResponseCaching();
             app.UseEndpoints(endpoints =>
             {
