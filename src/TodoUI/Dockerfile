@@ -7,12 +7,12 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Unni.ToDo.UI/Unni.ToDo.UI.csproj", "Unni.ToDo.UI/"]
+COPY ["src/TodoUI/Unni.ToDo.UI/Unni.ToDo.UI.csproj", "Unni.ToDo.UI/"]
 RUN dotnet restore "Unni.ToDo.UI/Unni.ToDo.UI.csproj"
-COPY . .
+COPY src/TodoUI .
 WORKDIR "/src/Unni.ToDo.UI"
 
-RUN dotnet build  -c $BUILD_CONFIGURATION
+RUN dotnet build  -c $BUILD_CONFIGURATION -o app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
