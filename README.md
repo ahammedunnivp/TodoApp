@@ -21,12 +21,19 @@ The ToDo application simplifies task management, providing users with a seamless
 - **Pagination**: Navigate through tasks with ease using pagination features.
 
 ## Project Structure
-1. **Unni.ToDo.Common**: C# Library containing shared models, interfaces and DTOs.
-2. **Unni.ToDo.API**: .NET Core Web API for backend functionality.
-3. **Unni.ToDo.UI**: Blazor client for the user interface.
-4. **Unni.ToDo.Tests**: Project for API testing using **xUnit**, including controller, service, repository unit testing, and API endpoint testing (in-process) with an in-memory database.
-
-
+The project is following Clean Architecture/Onion Architecture, and there are 3 micro services independent of each other.
+- TodoService
+	- Unni.Todo.Domain - C# Library containing Entities specific to the Todo micro-service and further extended to include domain services.
+	- Unni.Todo.Application - C# Library containing DTOs, AutoMapper Profiles, Interfaces & Services implementation.
+	- Unni.Todo.Infrastructure - C# Library containing specific implementations of DbContext, Repositories & UnitOfWork using EF Core.
+	- Unni.Todo.WebAPI - .NET Core Web API project with relevant controllers and middle-wares.
+- AdminService
+	- Unni.Admin.Domain - C# Library containing Entities specific to the Admin micro-service and further extended to include domain services.
+	- Unni.Admin.Application - C# Library containing DTOs, AutoMapper Profiles, Interfaces & Services implementation.
+	- Unni.Admin.Infrastructure - C# Library containing specific implementations of DbContext, Repositories & UnitOfWork using EF Core.
+	- Unni.Admin.WebAPI - NET Core Web API project with relevant controllers and middle-wares.
+- TodoUI
+	- Unni.Todo.UI - A blazor UI project handling the user interaction.
 ## Prerequisites
 Before you start, ensure you have the following prerequisites installed on your machine:
 
@@ -52,40 +59,42 @@ Before you start, ensure you have the following prerequisites installed on your 
 2. [**Open the Solution file**](src/Unni.ToDo.sln) in the IDE of your choice.
 3. **Restore all the packages**: Restore all the packages using the package manager, from Visual Studio you can right click on the solution and do the operation.
 4. **Build the Solution**: Build the solution, it will build all the 4 projects included.
-5. **Initialise Database**: This app is using a SQLite to store all the data, which is keeping all the data in disk. Default location of the DBs is src/Unni.ToDo.Api/Data/Db. It can be configured from appsettings.json. We are using Entity Framework as an ORM framework, so the database can be initialised using the following command.
+5. **Initialise Database**: This app is using a SQLite to store all the data, which is keeping all the data in disk. We are using Entity Framework as an ORM framework, so the database can be initialised using the following commands. 
+	1. Todo DB - Open the terminal from the Unni.Todo.Infrastructure project.
    ```bash
-   dotnet ef migrations add InitialMigration -c ToDoDBContext
    dotnet ef database update -c ToDoDBContext
-
-   dotnet ef migrations add InitialMigration -c AdminToDoContext
+```
+	2. Admin DB - Open the terminal from the Unni.Admin.Infrastructure project.
+```bash
    dotnet ef database update -c AdminToDoContext
    ```
-	One thing to note, here we are using 2 DbContexts, later this 2 DbContexts can have different implementations all together, for now we are using SQLite for both.
-	- **ToDoDBContext** - for all the todo related entities
-	- **AdminDbContext** - for all the admin related entities
+
 1. **Configure Startup projects**(optional): In Visual Studio, under Solution settings user can configure which projects to start on  Run.
-2. Run the application: Run both **Unni.ToDo.API** as well as **Unni.ToDo.UI**
+2. Run the application: Configure to run **Unni.Todo.WebAPI**, **Unni.Admin.WebAPI** & **Unni.ToDo.UI**
 	For Visual Studio we can use in-built tools or we can use the following commands
 ```bash
 cd src
 
-dotnet build Unni.ToDo.API
-dotnet run --project Unni.ToDo.API
+dotnet build Unni.Todo.WebAPI
+dotnet run --project Unni.Todo.WebAPI
 
-dotnet build Unni.ToDo.UI
+dotnet build Unni.Admin.WebAPI
+dotnet run --project Unni.Admin.WebAPI
+
+dotnet build Unni.Todo.UI
 dotnet run --project Unni.ToDo.UI
 
 ```
 
 ## Usage
 
-The ToDo application provides a user-friendly interface for managing tasks. Here's a quick guide on how to use the application:
+The Todo application provides a user-friendly interface for managing tasks. Here's a quick guide on how to use the application:
 
 1. **Open the Application:**
    - Ensure that the `ToDoApp.API` and `ToDoApp.UI` projects are built and running. Follow the steps mentioned in the "Getting Started" section.
 
 2. **Access the ToDo UI:**
-   - Open your web browser and navigate to [https://localhost:7071](https://localhost:7071) to access the ToDo application. (Port may vary based on your configuration)
+   - Open your web browser and navigate to [https://localhost:7071](https://localhost:7071) to access the Todo application. (Port may vary based on your configuration)
 
 3. **View ToDos:**
    - The main page displays a list of todos.
@@ -94,10 +103,10 @@ The ToDo application provides a user-friendly interface for managing tasks. Here
    - Click the "Add Todo" button on top of the table to add items
    - Fill in the details, such as title, description, category, etc.
    -  Click "Save" to add the todo.
-5. **Add a ToDo Category** (Optional): If the Category dropdown is empty, and as the AdminUI is not ready at this moment, through an API you can add as many categories as you  like.
+5. **Add a ToDo Category** (Optional): If you want to Category to the dropdown, and as the AdminUI is not ready at this moment, through an API you can add as many categories as you  like.
 ```bash
 curl -X 'POST' \
-  'https://localhost:7116/api/Category' \
+  'https://localhost:7282/api/Category' \
   -H 'accept: /' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -131,7 +140,7 @@ curl -X 'POST' \
 
 The ToDo application exposes a set of API endpoints,  here's a summary of the available API endpoints:
 
-### ToDo API
+### Todo Service
 
 #### Get ToDo by ID
 
@@ -165,7 +174,7 @@ The ToDo application exposes a set of API endpoints,  here's a summary of the av
 - **Description:** Delete a todo by its ID.
 - **Response:** 204 No Content on successful deletion.
 
-### Categories API
+### Admin Service
 
 #### Get All Categories
 
@@ -204,57 +213,51 @@ For detailed information on request and response formats, please refer to the AP
 
 ## Testing
 
-The ToDo application is thoroughly tested to ensure the reliability and correctness of its functionality. The testing strategy includes a combination of unit tests for individual components and in-process integration/API endpoint testing.
+The Todo application is thoroughly tested to ensure the reliability and correctness of its functionality. The testing strategy includes a combination of unit tests for individual components and in-process integration/API endpoint testing.
+### Functional/API Endpoint Testing
 
+In-process functional/API endpoint testing is performed to validate the interactions between different components and ensure the correctness of API responses. There are multiple xUnit projects handling the testing.
+
+- **Unni.Todo.FunctionalTests**
+  - In-process tests for API endpoints, including CRUD operations and filtering/sorting.
+  - Utilised the `WebApplicationFactory` and `HttpClient` for in-process testing.
+  - Ensured proper setup and teardown of test data with in-memory database.
+
+	- **API Response Validation:**
+	  - Tests to validate the correctness of API responses, including status codes, headers, and response bodies.
+  - Ensured the API follows RESTful principles.
+- Unni.Admin.FunctionalTests
+	- In-process tests for API endpoints checking the CRUD operations.
+	- Utilised the `WebApplicationFactory` and `HttpClient` for in-process testing.
 ### Unit Tests
 
 #### Controllers
-
 The controllers responsible for handling HTTP requests are unit-tested to ensure they correctly interact with the underlying services.
-
-- **ToDoController Tests:**
+- **TodoController Tests:**
   - Tests for CRUD operations, input validation, and response handling.
   - Mocked service objects and dependency injection to isolate controller logic.
 
 #### Services
-
 The business logic encapsulated in services is extensively unit-tested to verify its correctness and adherence to requirements.
-
-- **ToDoService Tests:**
+- **TodoService Tests:**
   - Unit tests for task creation, updating, marking as done, and deletion.
   - Mocked repository and logger objects for isolated testing.
 
 #### Repositories
-
 Data access and persistence functionality provided by repositories are unit-tested to ensure proper interaction with the underlying database.
-
-- **ToDoRepository Tests:**
+- **TodoRepository Tests:**
   - Unit tests for database interactions related to tasks.
   - Utilised in-memory database for isolated testing.
 
-### Integration/API Endpoint Testing
 
-In-process integration/API endpoint testing is performed to validate the interactions between different components and ensure the correctness of API responses.
-
-- **ToDo API Endpoint Tests:**
-  - In-process tests for API endpoints, including CRUD operations and filtering/sorting.
-  - Utilised the `TestServer` and `HttpClient` for in-process testing.
-  - Ensured proper setup and teardown of test data with in-memory database.
-
-- **API Response Validation:**
-  - Tests to validate the correctness of API responses, including status codes, headers, and response bodies.
-  - Ensured the API follows RESTful principles.
-
-### Total Tests: 40
-
-The entire test suite consists of approximately 40 tests, covering individual components, interactions between components, and API endpoints. This comprehensive testing approach contributes to the robustness and reliability of the ToDo application.
+The entire test suite consists of approximately 46 tests, covering individual components, interactions between components, and API endpoints. This comprehensive testing approach contributes to the robustness and reliability of the Todo application.
 
 
 ## Running Tests
 
 1. **Open the Solution:**
    - Launch your preferred integrated development environment (IDE) that supports .NET development.
-   - Open the ToDo application solution.
+   - Open the Unni.Todo solution.
 
 2. **Build the Solution:**
    - Ensure that the solution is built to resolve all dependencies.
@@ -287,6 +290,19 @@ The entire test suite consists of approximately 40 tests, covering individual co
 
 This design pattern promotes separation of concerns, maintainability, and testability of the application.
 
+### Domain - Application - Infrastructure - WebAPI
+- Domain
+	- This layer represents the core business logic and contains entities.
+	- It does not have any dependencies on other layers. It's the innermost layer and contains the pure business logic.
+- Application
+	- This layer contains application services that orchestrate interactions between the domain layer and the infrastructure layer.
+	- It depends on the domain layer but not depend on specific details of the infrastructure.
+- Infrastructure
+	- This layer is responsible for implementing details that are external to the application, such as databases and frameworks.
+	- It depends on the domain layer but not vice versa.
+- Web API 
+	- This layer exposes the application's functionality to the outside world through APIs.
+	- It depends on the application layer to handle business logic, but it does not contains any business logic itself.
 ### Common C# Library
 It serves as a shared resource for these components, ensuring consistency and promoting code reuse across both the API and UI layers. Including DTOs and Interfaces in the common library facilitates seamless communication and interaction between different parts of the application.
 
