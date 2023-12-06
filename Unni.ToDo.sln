@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9E789E6D-E078-47D9-8922-452BB49C995B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TodoService", "TodoService", "{56DAF2CB-0753-4183-BAE1-329255DC02A4}"
+	ProjectSection(SolutionItems) = preProject
+		src\ToDoService\Dockerfile = src\ToDoService\Dockerfile
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.Todo.Application", "src\ToDoService\Unni.Todo.Application\Unni.Todo.Application.csproj", "{B079B4E0-9DBF-4DC5-8ED2-80A21725315C}"
 EndProject
@@ -13,9 +16,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.Todo.Domain", "src\ToD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.Todo.Infrastructure", "src\ToDoService\Unni.ToDo.Infrastructure\Unni.Todo.Infrastructure.csproj", "{D5B55E2E-8A77-44A8-8045-A858230B4B51}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.Todo.WebAPI", "src\ToDoService\Unni.Todo.WebAPI\Unni.Todo.WebAPI.csproj", "{03812A4A-8946-415F-87FF-46715805DFFF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unni.Todo.WebAPI", "src\ToDoService\Unni.Todo.WebAPI\Unni.Todo.WebAPI.csproj", "{03812A4A-8946-415F-87FF-46715805DFFF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AdminService", "AdminService", "{DE5B94D8-B68B-4720-A254-11D35391957A}"
+	ProjectSection(SolutionItems) = preProject
+		src\AdminService\Dockerfile = src\AdminService\Dockerfile
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.Admin.Application", "src\AdminService\Unni.Admin.Application\Unni.Admin.Application.csproj", "{927CA958-27BB-4FCE-8D57-A5B2A905F546}"
 EndProject
@@ -23,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.Admin.Domain", "src\Ad
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.Admin.Infrastructure", "src\AdminService\Unni.Admin.Infrastructure\Unni.Admin.Infrastructure.csproj", "{2C3E5BBD-72B1-4CFA-B968-070491155411}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.Admin.WebAPI", "src\AdminService\Unni.Admin.WebAPI\Unni.Admin.WebAPI.csproj", "{6DEF1C40-8A82-4B8F-AB1E-79BC4DE385B9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unni.Admin.WebAPI", "src\AdminService\Unni.Admin.WebAPI\Unni.Admin.WebAPI.csproj", "{6DEF1C40-8A82-4B8F-AB1E-79BC4DE385B9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TodoUI", "TodoUI", "{0682D1D0-789A-4532-95F1-04B7048BBB84}"
 EndProject

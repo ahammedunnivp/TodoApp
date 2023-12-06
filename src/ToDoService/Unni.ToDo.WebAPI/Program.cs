@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Unni.Todo.WebAPI;
 
-namespace Unni.Todo.WebAPI
-{
     public class Program
     {
         public static void Main(string[] args)
@@ -14,7 +13,6 @@ namespace Unni.Todo.WebAPI
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseKestrel().UseStartup<Startup>();
                 });
     }
-}
