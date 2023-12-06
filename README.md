@@ -61,16 +61,19 @@ Before you start, ensure you have the following prerequisites installed on your 
 4. **Build the Solution**: Build the solution, it will build all the 4 projects included.
 5. **Initialise Database**: This app is using a SQLite to store all the data, which is keeping all the data in disk. We are using Entity Framework as an ORM framework, so the database can be initialised using the following commands. 
 	1. Todo DB - Open the terminal from the Unni.Todo.Infrastructure project.
-   ```bash
-   dotnet ef database update -c ToDoDBContext
-```
-	2. Admin DB - Open the terminal from the Unni.Admin.Infrastructure project.
-```bash
-   dotnet ef database update -c AdminToDoContext
-   ```
+	
+	```bash
+	   dotnet ef database update -c ToDoDBContext
+	```
 
-1. **Configure Startup projects**(optional): In Visual Studio, under Solution settings user can configure which projects to start on  Run.
-2. Run the application: Configure to run **Unni.Todo.WebAPI**, **Unni.Admin.WebAPI** & **Unni.ToDo.UI**
+	2. Admin DB - Open the terminal from the Unni.Admin.Infrastructure project.
+
+	```bash
+	   dotnet ef database update -c AdminToDoContext
+	```
+
+6. **Configure Startup projects**(optional): In Visual Studio, under Solution settings user can configure which projects to start on  Run.
+7. Run the application: Configure to run **Unni.Todo.WebAPI**, **Unni.Admin.WebAPI** & **Unni.ToDo.UI**
 	For Visual Studio we can use in-built tools or we can use the following commands
 ```bash
 cd src
