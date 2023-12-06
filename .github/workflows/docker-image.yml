@@ -29,7 +29,7 @@ jobs:
           context: .
           file: src/ToDoService/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/admin-api:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/todo/todo-api:latest
       -
         name: Build and push Admin API
         uses: docker/build-push-action@v5
@@ -37,4 +37,13 @@ jobs:
           context: .
           file: src/AdminService/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/admin-api:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/todo/admin-api:latest
+
+      -
+        name: Build and push Todo UI
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: src/TodoUI/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/todo/todo-ui:latest
