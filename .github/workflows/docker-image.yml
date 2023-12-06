@@ -27,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: src/TodoService/Dockerfile
+          file: src/ToDoService/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/admin-api:latest
       -
