@@ -1,0 +1,20 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install Dependencies
+      run: cd /src/AdminService/Unni.Admin.WebAPI
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag ahammedunnivp/todo/admin-webapi:$(date +%s)
