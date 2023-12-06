@@ -20,7 +20,7 @@ RUN dotnet restore "Unni.Admin.WebAPI/Unni.Admin.WebAPI.csproj"
 COPY . .
 WORKDIR "/src/Unni.Admin.WebAPI"
 
-RUN dotnet build  -c $BUILD_CONFIGURATION -o app/build
+RUN dotnet build  -c $BUILD_CONFIGURATION
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
