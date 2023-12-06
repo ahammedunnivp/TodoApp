@@ -17,7 +17,7 @@ COPY ["src/AdminService/Unni.Admin.Application/Unni.Admin.Application.csproj", "
 COPY ["src/AdminService/Unni.Admin.Domain/Unni.Admin.Domain.csproj", "Unni.Admin.Domain/"]
 COPY ["src/AdminService/Unni.Admin.Infrastructure/Unni.Admin.Infrastructure.csproj", "Unni.Admin.Infrastructure/"]
 RUN dotnet restore "Unni.Admin.WebAPI/Unni.Admin.WebAPI.csproj"
-COPY . .
+COPY src/AdminService .
 WORKDIR "/src/Unni.Admin.WebAPI"
 
 RUN dotnet build  -c $BUILD_CONFIGURATION
