@@ -17,7 +17,7 @@ COPY ["src/ToDoService/Unni.Todo.Application/Unni.Todo.Application.csproj", "Unn
 COPY ["src/ToDoService/Unni.Todo.Domain/Unni.Todo.Domain.csproj", "Unni.Todo.Domain/"]
 COPY ["src/ToDoService/Unni.ToDo.Infrastructure/Unni.Todo.Infrastructure.csproj", "Unni.ToDo.Infrastructure/"]
 RUN dotnet restore "Unni.ToDo.WebAPI/Unni.Todo.WebAPI.csproj"
-COPY . .
+COPY src/ToDoService .
 WORKDIR "/src/Unni.ToDo.WebAPI"
 
 RUN dotnet build  -c $BUILD_CONFIGURATION
