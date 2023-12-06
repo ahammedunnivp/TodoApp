@@ -49,7 +49,6 @@ namespace Unni.AdminAPI
             else
             {
                 app.UseHsts();
-                app.UseHttpsRedirection();
                 app.UseExceptionHandler(errorApp =>
                 {
                     errorApp.Run(async context =>
