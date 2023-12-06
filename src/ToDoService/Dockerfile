@@ -12,10 +12,10 @@ WORKDIR /src
 RUN dotnet tool install --global dotnet-ef
 ENV PATH="${PATH}:/root/.dotnet/tools"
 
-COPY ["Unni.ToDo.WebAPI/Unni.Todo.WebAPI.csproj", "Unni.ToDo.WebAPI/"]
-COPY ["Unni.Todo.Application/Unni.Todo.Application.csproj", "Unni.Todo.Application/"]
-COPY ["Unni.Todo.Domain/Unni.Todo.Domain.csproj", "Unni.Todo.Domain/"]
-COPY ["Unni.ToDo.Infrastructure/Unni.Todo.Infrastructure.csproj", "Unni.ToDo.Infrastructure/"]
+COPY ["src/TodoService/Unni.ToDo.WebAPI/Unni.Todo.WebAPI.csproj", "Unni.ToDo.WebAPI/"]
+COPY ["src/TodoService/Unni.Todo.Application/Unni.Todo.Application.csproj", "Unni.Todo.Application/"]
+COPY ["src/TodoService/Unni.Todo.Domain/Unni.Todo.Domain.csproj", "Unni.Todo.Domain/"]
+COPY ["src/TodoService/Unni.ToDo.Infrastructure/Unni.Todo.Infrastructure.csproj", "Unni.ToDo.Infrastructure/"]
 RUN dotnet restore "Unni.ToDo.WebAPI/Unni.Todo.WebAPI.csproj"
 COPY . .
 WORKDIR "/src/Unni.ToDo.WebAPI"
