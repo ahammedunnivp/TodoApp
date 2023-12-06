@@ -1,5 +1,5 @@
 # Todo Application
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen) ![License](https://img.shields.io/badge/license-MIT-blue) 
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen) ![License](https://img.shields.io/badge/license-MIT-blue) [![Docker Image CI](https://github.com/ahammedunnivp/TodoApp/actions/workflows/docker-image.yml/badge.svg?branch=main)](https://github.com/ahammedunnivp/TodoApp/actions/workflows/docker-image.yml)
 
 a simple yet powerful task management system.
 
