@@ -8,15 +8,25 @@ namespace Unni.ToDo.UI
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var adminServiceUrl = Environment.GetEnvironmentVariable("AdminServiceUrl"); 
+
+            var todoServiceUrl = Environment.GetEnvironmentVariable("TodoServiceUrl");
+
+            builder.Services.AddHttpClient("AdminService", client =>
+            {
+                client.BaseAddress = new Uri(adminServiceUrl);
+            });
+
+            builder.Services.AddHttpClient("TodoService", client =>
+            {
+                client.BaseAddress = new Uri(todoServiceUrl);
+            });
+
             // Add services to the container.
             builder.Services.AddAntiforgery();
             builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
-            builder.Services.AddHttpClient("ToDoAPI", client =>
-            {
-                client.BaseAddress = new Uri("https://localhost:7116");
-            });
-
+            builder.Services.AddHttpClient();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
