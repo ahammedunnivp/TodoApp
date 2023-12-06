@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using System.Net;
 using Unni.Todo.Application.AutoMapperProfile;
 using Unni.Todo.Application.Interfaces;
 using Unni.Todo.Application.Services;
@@ -38,12 +40,30 @@ namespace Unni.Todo.WebAPI
             }
             else
             {
-                app.UseExceptionHandler();
+                app.UseExceptionHandler(errorApp =>
+                {
+                    errorApp.Run(async context =>
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        context.Response.ContentType = "application/json";
+
+                        var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+                        var exception = exceptionHandlerPathFeature?.Error;
+
+                        var response = new
+                        {
+                            StatusCode = context.Response.StatusCode,
+                            Message = "An unexpected error occurred.",
+                            Exception = exception?.Message
+                        };
+
+                        await context.Response.WriteAsJsonAsync(response);
+                    });
+                });
             }
             app.UseSwagger();
             app.UseSwaggerUI();
             app.UseRouting();
-            app.UseHttpsRedirection();
             app.UseResponseCaching();
             app.UseEndpoints(endpoints =>
             {
@@ -66,22 +86,14 @@ namespace Unni.Todo.WebAPI
             services.AddLogging(builder =>
             {
                 builder.AddConsole();
-                //builder.ClearProviders();
-                //builder.AddSerilog();
             });
             services.AddDbContext<ToDoDBContext>(options =>
                     options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
 
             services.AddScoped<ITodoRepository, TodoItemRepository>();
-
-
             services.AddScoped<ITodoUnitOfWork, TodoUnitOfWork>();
-
-
             services.AddScoped<ITodoService, TodoService>();
-
-
             services.AddAutoMapper(typeof(ToDoProfile));
 
             services.AddSwaggerGen();

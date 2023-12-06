@@ -2,7 +2,7 @@
 @using Unni.ToDo.UI.DTOs.Admin;
 @using Unni.ToDo.UI.DTOs.Todo;
 @rendermode InteractiveServer
-@inject HttpClient HttpClient;
+@inject IHttpClientFactory ClientFactory;
 <h2>ToDo List</h2>
 
 @if (todos == null && !IsDataEmpty)
@@ -204,15 +204,21 @@ else
     private bool IsLastPage => currentPage == totalPages || currentPage > totalPages;
     private bool IsDataEmpty = false;
 
+    protected HttpClient TodoService;
+    protected HttpClient AdminService;
+
+
     protected override async Task OnInitializedAsync()
     {
+        TodoService = ClientFactory.CreateClient("TodoService");
+        AdminService = ClientFactory.CreateClient("AdminService");
         await LoadPageAsync();
         await LoadCategoriesAsync();
     }
 
     private async Task LoadCategoriesAsync()
     {
-        categories = await HttpClient.GetFromJsonAsync<List<CategoryDto>>("https://localhost:7282/api/category");
+        categories = await AdminService.GetFromJsonAsync<List<CategoryDto>>("api/category");
     }
 
     private async Task LoadPageAsync()
@@ -226,8 +232,7 @@ else
         }
 
         searchRequest = new TodoFilterRequest { Pagination = pagination, Filter = filter, IsFilter = isFilter };
-
-        var response = await HttpClient.PostAsJsonAsync<TodoFilterRequest>("https://localhost:7116/api/todo/search", searchRequest);
+        var response = await TodoService.PostAsJsonAsync<TodoFilterRequest>("api/todo/search", searchRequest);
         if (response.IsSuccessStatusCode)
         {
             paginatedResponse = await response.Content.ReadFromJsonAsync<PaginatedResponse<TodoDto>>();
@@ -244,7 +249,7 @@ else
 
     private async Task<bool> SaveNewTodoAsync(CreateTodoRequest todo)
     {
-        var response = await HttpClient.PostAsJsonAsync<CreateTodoRequest>("https://localhost:7116/api/todo/", todo);
+        var response = await TodoService.PostAsJsonAsync<CreateTodoRequest>("api/todo/", todo);
         if (response.IsSuccessStatusCode)
         {
             var newItem = await response.Content.ReadFromJsonAsync<TodoDto>();
@@ -262,7 +267,7 @@ else
 
     protected async Task UpdateItemAsync()
     {
-        var response = await HttpClient.PutAsJsonAsync<TodoDto>($"https://localhost:7116/api/todo/{editingItem.Id}", editingItem);
+        var response = await TodoService.PutAsJsonAsync<TodoDto>($"api/todo/{editingItem.Id}", editingItem);
         if (response.IsSuccessStatusCode)
         {
             editingItem = null;
@@ -272,7 +277,7 @@ else
 
     protected async Task DeleteItemAsync(TodoDto item)
     {
-        var response = await HttpClient.DeleteAsync($"https://localhost:7116/api/todo/{item.Id}");
+        var response = await TodoService.DeleteAsync($"api/todo/{item.Id}");
         if (response.IsSuccessStatusCode)
         {
             LoadPageAsync();
