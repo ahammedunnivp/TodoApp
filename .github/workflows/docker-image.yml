@@ -33,7 +33,7 @@ jobs:
           file: src/ToDoService/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/todo-api:${RELEASE_TAG}
+            ${{ secrets.DOCKERHUB_USERNAME }}/todo-api:${{ env.RELEASE_TAG }}
             ${{ secrets.DOCKERHUB_USERNAME }}/todo-api:latest
       -
         name: Build and push Admin API
@@ -43,7 +43,7 @@ jobs:
           file: src/AdminService/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/admin-api:${RELEASE_TAG}
+            ${{ secrets.DOCKERHUB_USERNAME }}/admin-api:${{ env.RELEASE_TAG }}
             ${{ secrets.DOCKERHUB_USERNAME }}/admin-api:latest
 
       -
@@ -54,5 +54,5 @@ jobs:
           file: src/TodoUI/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/todo-ui:${RELEASE_TAG}
+            ${{ secrets.DOCKERHUB_USERNAME }}/todo-ui:${{ env.RELEASE_TAG }}
             ${{ secrets.DOCKERHUB_USERNAME }}/todo-ui:latest
