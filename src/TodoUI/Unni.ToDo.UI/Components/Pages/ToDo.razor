@@ -218,7 +218,16 @@ else
 
     private async Task LoadCategoriesAsync()
     {
-        categories = await AdminService.GetFromJsonAsync<List<CategoryDto>>("api/category");
+        try
+        {
+            categories = await AdminService.GetFromJsonAsync<List<CategoryDto>>("api/category") ?? new List<CategoryDto>();
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e.ToString());
+            categories = new List<CategoryDto>();
+        }
+
     }
 
     private async Task LoadPageAsync()
@@ -235,7 +244,7 @@ else
         var response = await TodoService.PostAsJsonAsync<TodoFilterRequest>("api/todo/search", searchRequest);
         if (response.IsSuccessStatusCode)
         {
-            paginatedResponse = await response.Content.ReadFromJsonAsync<PaginatedResponse<TodoDto>>();
+            paginatedResponse = await response.Content.ReadFromJsonAsync<PaginatedResponse<TodoDto>>() ?? new PaginatedResponse<TodoDto>();
             todos = paginatedResponse.Items.ToList();
             totalPages = paginatedResponse.Pagination.TotalCount.Value % pageSize == 0 ? paginatedResponse.Pagination.TotalCount.Value / pageSize : (paginatedResponse.Pagination.TotalCount.Value / pageSize) + 1;
             StateHasChanged();
@@ -271,7 +280,7 @@ else
         if (response.IsSuccessStatusCode)
         {
             editingItem = null;
-            LoadPageAsync();
+            await LoadPageAsync();
         }
     }
 
@@ -280,7 +289,7 @@ else
         var response = await TodoService.DeleteAsync($"api/todo/{item.Id}");
         if (response.IsSuccessStatusCode)
         {
-            LoadPageAsync();
+            await LoadPageAsync();
         }
     }
 
@@ -330,7 +339,7 @@ else
         if (!IsFirstPage)
         {
             currentPage--;
-            LoadPageAsync();
+            LoadPageAsync().Wait();
         }
     }
 
@@ -339,7 +348,7 @@ else
         if (!IsLastPage)
         {
             currentPage++;
-            LoadPageAsync();
+            LoadPageAsync().Wait();
         }
     }
 
@@ -347,28 +356,28 @@ else
     {
         pageSize = Convert.ToInt32(e?.Value?.ToString());
         pagination.PageSize = pageSize;
-        LoadPageAsync();
+        LoadPageAsync().Wait();
     }
 
     private void SortFieldUpdated(ChangeEventArgs e)
     {
         var sortField = e?.Value?.ToString();
         pagination.SortField = sortField;
-        LoadPageAsync();
+        LoadPageAsync().Wait();
     }
 
     private void SortOrderUpdated(ChangeEventArgs e)
     {
         var sortOrder = e?.Value?.ToString();
         pagination.IsSortAscending = sortOrder == "Ascending" ? true : false;
-        LoadPageAsync();
+        LoadPageAsync().Wait();
     }
 
     private void ToggleShowPendingTodos()
     {
         showOnlyPendingItems = showOnlyPendingItems ? false : true;
         currentPage = 1;
-        LoadPageAsync();
+        LoadPageAsync().Wait();
     }
 
 }

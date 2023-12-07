@@ -8,9 +8,9 @@ namespace Unni.ToDo.UI
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            var adminServiceUrl = Environment.GetEnvironmentVariable("AdminServiceUrl"); 
+            var adminServiceUrl = Environment.GetEnvironmentVariable("AdminServiceUrl") ?? ""; 
 
-            var todoServiceUrl = Environment.GetEnvironmentVariable("TodoServiceUrl");
+            var todoServiceUrl = Environment.GetEnvironmentVariable("TodoServiceUrl") ?? "";
 
             builder.Services.AddHttpClient("AdminService", client =>
             {
