@@ -12,17 +12,29 @@
 else
 {
     <div style="display: flex; justify-content: space-between;">
-        <button @onclick="AddTodo">Add Todo +</button>
-        <button @onclick="ToggleShowPendingTodos">
-            @if (showOnlyPendingItems)
-            {
-                <span>Show all todos</span>
-            }
-            else
-            {
-                <span>Show only pending todos</span>
-            }
-        </button>
+        <div><button @onclick="AddTodo">Add Todo +</button></div>
+        <div>
+            Filters
+            <select @onchange="CategoryFilterUpdated">
+                <option value="">All</option>
+                @foreach (var option in categories)
+                {
+                    <option value="@option.Name">@option.Name</option>
+                }
+            </select>
+
+            <button @onclick="ToggleShowPendingTodos">
+                @if (showOnlyPendingItems)
+                {
+                    <span>Show all todos</span>
+                }
+                else
+                {
+                    <span>Show only pending todos</span>
+                }
+            </button>
+        </div>
+        
     </div>
     
 
@@ -200,6 +212,8 @@ else
     private bool showTodoInputControls = false;
     private bool showOnlyPendingItems = false;
 
+    private string categoryFiltered = ""; 
+
     private bool IsFirstPage => currentPage == 1;
     private bool IsLastPage => currentPage == totalPages || currentPage > totalPages;
     private bool IsDataEmpty = false;
@@ -212,13 +226,22 @@ else
     {
         TodoService = ClientFactory.CreateClient("TodoService");
         AdminService = ClientFactory.CreateClient("AdminService");
-        await LoadPageAsync();
         await LoadCategoriesAsync();
+        await LoadPageAsync();
     }
 
     private async Task LoadCategoriesAsync()
     {
-        categories = await AdminService.GetFromJsonAsync<List<CategoryDto>>("api/category");
+        try
+        {
+            categories = await AdminService.GetFromJsonAsync<List<CategoryDto>>("api/category") ?? new List<CategoryDto>();
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e.ToString());
+            categories = new List<CategoryDto>();
+        }
+
     }
 
     private async Task LoadPageAsync()
@@ -230,12 +253,17 @@ else
             filter.IsDoneFilter = false;
             isFilter = true;
         }
+        if (categoryFiltered != "")
+        {
+            filter.Category = categoryFiltered;
+            isFilter = true;
+        }
 
         searchRequest = new TodoFilterRequest { Pagination = pagination, Filter = filter, IsFilter = isFilter };
         var response = await TodoService.PostAsJsonAsync<TodoFilterRequest>("api/todo/search", searchRequest);
         if (response.IsSuccessStatusCode)
         {
-            paginatedResponse = await response.Content.ReadFromJsonAsync<PaginatedResponse<TodoDto>>();
+            paginatedResponse = await response.Content.ReadFromJsonAsync<PaginatedResponse<TodoDto>>() ?? new PaginatedResponse<TodoDto>();
             todos = paginatedResponse.Items.ToList();
             totalPages = paginatedResponse.Pagination.TotalCount.Value % pageSize == 0 ? paginatedResponse.Pagination.TotalCount.Value / pageSize : (paginatedResponse.Pagination.TotalCount.Value / pageSize) + 1;
             StateHasChanged();
@@ -271,7 +299,7 @@ else
         if (response.IsSuccessStatusCode)
         {
             editingItem = null;
-            LoadPageAsync();
+            await LoadPageAsync();
         }
     }
 
@@ -280,7 +308,7 @@ else
         var response = await TodoService.DeleteAsync($"api/todo/{item.Id}");
         if (response.IsSuccessStatusCode)
         {
-            LoadPageAsync();
+            await LoadPageAsync();
         }
     }
 
@@ -347,6 +375,7 @@ else
     {
         pageSize = Convert.ToInt32(e?.Value?.ToString());
         pagination.PageSize = pageSize;
+        currentPage = 1;
         LoadPageAsync();
     }
 
@@ -354,6 +383,7 @@ else
     {
         var sortField = e?.Value?.ToString();
         pagination.SortField = sortField;
+        currentPage = 1;
         LoadPageAsync();
     }
 
@@ -361,12 +391,20 @@ else
     {
         var sortOrder = e?.Value?.ToString();
         pagination.IsSortAscending = sortOrder == "Ascending" ? true : false;
+        currentPage = 1;
         LoadPageAsync();
     }
 
     private void ToggleShowPendingTodos()
     {
         showOnlyPendingItems = showOnlyPendingItems ? false : true;
+        currentPage = 1;
+        LoadPageAsync();
+    }
+
+    private void CategoryFilterUpdated(ChangeEventArgs e)
+    {
+        categoryFiltered = e?.Value?.ToString();
         currentPage = 1;
         LoadPageAsync();
     }

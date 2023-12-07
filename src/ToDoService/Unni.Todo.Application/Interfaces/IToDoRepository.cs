@@ -5,7 +5,7 @@ namespace Unni.Todo.Application.Interfaces
 {
     public interface ITodoRepository
     {
-        TodoItemEntity GetById(int id);
+        TodoItemEntity? GetById(int id);
         (IEnumerable<TodoItemEntity>, int) Search(Pagination pagination, ToDoFilter? filter);
         TodoItemEntity Add(TodoItemEntity item);
         TodoItemEntity Update(TodoItemEntity item);
