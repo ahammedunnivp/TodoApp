@@ -16,7 +16,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.Todo.Domain", "src\ToD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.Todo.Infrastructure", "src\ToDoService\Unni.ToDo.Infrastructure\Unni.Todo.Infrastructure.csproj", "{D5B55E2E-8A77-44A8-8045-A858230B4B51}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.Todo.WebAPI", "src\ToDoService\Unni.Todo.WebAPI\Unni.Todo.WebAPI.csproj", "{03812A4A-8946-415F-87FF-46715805DFFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.Todo.WebAPI", "src\ToDoService\Unni.ToDo.WebAPI\Unni.Todo.WebAPI.csproj", "{03812A4A-8946-415F-87FF-46715805DFFF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AdminService", "AdminService", "{DE5B94D8-B68B-4720-A254-11D35391957A}"
 	ProjectSection(SolutionItems) = preProject
@@ -48,9 +48,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.Admin.UnniTests", "tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TodoTests", "TodoTests", "{931E42D7-DF18-4C29-A587-E801AF5ACC0F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.ToDo.FunctionalTests", "tests\ToDoService.Tests\Unni.Todo.FunctionalTests\Unni.ToDo.FunctionalTests.csproj", "{CD7EBBC7-E263-469C-9AE5-2F948CB4F84F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.ToDo.FunctionalTests", "tests\ToDoService.Tests\Unni.ToDo.FunctionalTests\Unni.ToDo.FunctionalTests.csproj", "{CD7EBBC7-E263-469C-9AE5-2F948CB4F84F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.ToDo.UnitTests", "tests\ToDoService.Tests\Unni.Todo.UnitTests\Unni.ToDo.UnitTests.csproj", "{EE0969CD-611E-4771-A342-AC33234E9502}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unni.ToDo.UnitTests", "tests\ToDoService.Tests\Unni.ToDo.UnitTests\Unni.ToDo.UnitTests.csproj", "{EE0969CD-611E-4771-A342-AC33234E9502}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
