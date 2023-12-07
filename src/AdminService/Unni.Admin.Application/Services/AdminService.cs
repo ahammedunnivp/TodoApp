@@ -44,7 +44,6 @@ namespace Unni.Admin.Application.Services
         public CategoryDto GetCategoryById(int id)
         {
             var item = _repository.GetCategoryById(id);
-            _unitOfWork.SaveChanges();
             return _mapper.Map<CategoryDto>(item);
         }
 
