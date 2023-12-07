@@ -89,12 +89,40 @@ dotnet run --project Unni.ToDo.UI
 
 ```
 
+## Docker
+### Docker Hub URLs
+
+1. **Todo API**: [ahammedunni/todo-api](https://hub.docker.com/r/ahammedunni/todo-api)
+2. **Admin API**: [ahammedunni/admin-api](https://hub.docker.com/r/ahammedunni/admin-api)
+3. **Todo UI**: [ahammedunni/todo-ui](https://hub.docker.com/r/ahammedunni/todo-ui)
+
+### Getting Started
+
+To run the application locally using Docker, follow these steps:
+
+1. **Create Docker Network:**
+	```bash
+	   docker network create todonetwork
+	```
+
+2. Run Todo API
+	```bash
+	   docker run -p 5005:8080 --name todoapi --network todonetwork -d ahammedunni/todo-api
+	```
+ 3. Run Admin API
+	```bash
+	   docker run -p 4004:8080 --name adminapi --network todonetwork -d ahammedunnivp/admin-api
+	```    
+4. Run Todo UI
+	```bash
+	   docker run -p 3003:8080 -e "AdminServiceUrl=http://adminapi:8080" -e "TodoServiceUrl=http://todoapi:8080" --name todo-ui --network todonetwork -d ahammedunnivp/todo-ui
+	```    
 ## Usage
 
 The Todo application provides a user-friendly interface for managing tasks. Here's a quick guide on how to use the application:
 
 1. **Open the Application:**
-   - Ensure that the `ToDoApp.API` and `ToDoApp.UI` projects are built and running. Follow the steps mentioned in the "Getting Started" section.
+   - Ensure that the `ToDoApp.API` and `ToDoApp.UI` projects are built and running. Follow the steps mentioned in the "Getting Started" section or use the docker method.
 
 2. **Access the ToDo UI:**
    - Open your web browser and navigate to [https://localhost:7071](https://localhost:7071) to access the Todo application. (Port may vary based on your configuration)
