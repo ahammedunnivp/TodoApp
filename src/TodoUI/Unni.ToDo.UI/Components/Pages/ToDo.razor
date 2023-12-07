@@ -12,17 +12,29 @@
 else
 {
     <div style="display: flex; justify-content: space-between;">
-        <button @onclick="AddTodo">Add Todo +</button>
-        <button @onclick="ToggleShowPendingTodos">
-            @if (showOnlyPendingItems)
-            {
-                <span>Show all todos</span>
-            }
-            else
-            {
-                <span>Show only pending todos</span>
-            }
-        </button>
+        <div><button @onclick="AddTodo">Add Todo +</button></div>
+        <div>
+            Filters
+            <select @onchange="CategoryFilterUpdated">
+                <option value="">All</option>
+                @foreach (var option in categories)
+                {
+                    <option value="@option.Name">@option.Name</option>
+                }
+            </select>
+
+            <button @onclick="ToggleShowPendingTodos">
+                @if (showOnlyPendingItems)
+                {
+                    <span>Show all todos</span>
+                }
+                else
+                {
+                    <span>Show only pending todos</span>
+                }
+            </button>
+        </div>
+        
     </div>
     
 
@@ -200,6 +212,8 @@ else
     private bool showTodoInputControls = false;
     private bool showOnlyPendingItems = false;
 
+    private string categoryFiltered = ""; 
+
     private bool IsFirstPage => currentPage == 1;
     private bool IsLastPage => currentPage == totalPages || currentPage > totalPages;
     private bool IsDataEmpty = false;
@@ -212,8 +226,8 @@ else
     {
         TodoService = ClientFactory.CreateClient("TodoService");
         AdminService = ClientFactory.CreateClient("AdminService");
-        await LoadPageAsync();
         await LoadCategoriesAsync();
+        await LoadPageAsync();
     }
 
     private async Task LoadCategoriesAsync()
@@ -237,6 +251,11 @@ else
         if (showOnlyPendingItems)
         {
             filter.IsDoneFilter = false;
+            isFilter = true;
+        }
+        if (categoryFiltered != "")
+        {
+            filter.Category = categoryFiltered;
             isFilter = true;
         }
 
@@ -339,7 +358,7 @@ else
         if (!IsFirstPage)
         {
             currentPage--;
-            LoadPageAsync().Wait();
+            LoadPageAsync();
         }
     }
 
@@ -348,7 +367,7 @@ else
         if (!IsLastPage)
         {
             currentPage++;
-            LoadPageAsync().Wait();
+            LoadPageAsync();
         }
     }
 
@@ -356,28 +375,38 @@ else
     {
         pageSize = Convert.ToInt32(e?.Value?.ToString());
         pagination.PageSize = pageSize;
-        LoadPageAsync().Wait();
+        currentPage = 1;
+        LoadPageAsync();
     }
 
     private void SortFieldUpdated(ChangeEventArgs e)
     {
         var sortField = e?.Value?.ToString();
         pagination.SortField = sortField;
-        LoadPageAsync().Wait();
+        currentPage = 1;
+        LoadPageAsync();
     }
 
     private void SortOrderUpdated(ChangeEventArgs e)
     {
         var sortOrder = e?.Value?.ToString();
         pagination.IsSortAscending = sortOrder == "Ascending" ? true : false;
-        LoadPageAsync().Wait();
+        currentPage = 1;
+        LoadPageAsync();
     }
 
     private void ToggleShowPendingTodos()
     {
         showOnlyPendingItems = showOnlyPendingItems ? false : true;
         currentPage = 1;
-        LoadPageAsync().Wait();
+        LoadPageAsync();
+    }
+
+    private void CategoryFilterUpdated(ChangeEventArgs e)
+    {
+        categoryFiltered = e?.Value?.ToString();
+        currentPage = 1;
+        LoadPageAsync();
     }
 
 }
