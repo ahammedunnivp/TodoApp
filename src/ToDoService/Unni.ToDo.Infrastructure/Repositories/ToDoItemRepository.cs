@@ -81,7 +81,7 @@ namespace Unni.Todo.Infrastructure.Repositories
             return (todoItems, totalCount);
         }
 
-        public TodoItemEntity GetById(int id)
+        public TodoItemEntity? GetById(int id)
         {
             _logger.LogInformation("Fething todo item with Id: {id}", id);
 

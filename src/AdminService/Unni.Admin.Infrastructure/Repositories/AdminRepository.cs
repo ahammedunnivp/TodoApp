@@ -45,7 +45,7 @@ namespace Unni.Admin.Infrastructure.Repositories
             return _dbContext.Categories.AsQueryable().ToList();
         }
 
-        public CategoryEntity GetCategoryById(int categoryId)
+        public CategoryEntity? GetCategoryById(int categoryId)
         {
             _logger.LogInformation("Fething category item with Id: {id}", categoryId);
 
